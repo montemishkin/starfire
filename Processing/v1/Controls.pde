@@ -16,23 +16,17 @@
 float CAMERA_STEP = 110;
 // turn size when rotating camera via keyboard controls
 float CAMERA_TURN = 0.05;
+// conversions between serial data and camera movement (rotations and translations)
+float ANGLE_SCALE = 3600;
+float TRANS_SCALE = 1;
 
 
 void handle_controls() {
-  float angle_scale = 3600;
-  float trans_scale = 1;
-  
-//  // translate down
-//  PVector shift = CAMERA_AXIS.normalize(null);
-//  shift.mult(CAMERA_STEP);
-//  CAMERA_EYE.add(shift);
-//  CAMERA_CENTER.add(shift);
-   
   // translate forward/backward
   // shift both CAMERA_EYE and CAMERA_CENTER a little bit along look
   PVector shift = PVector.sub(CAMERA_CENTER, CAMERA_EYE);
   shift.normalize();
-  shift.mult(-EULERS[1] / trans_scale);
+  shift.mult(-EULERS[1] / TRANS_SCALE);
   CAMERA_EYE.add(shift);
   CAMERA_CENTER.add(shift);
     
@@ -40,22 +34,14 @@ void handle_controls() {
   // shift both CAMERA_EYE and CAMERA_CENTER a little bit along (look x CAMERA_AXIS)
   shift = PVector.sub(CAMERA_CENTER, CAMERA_EYE).cross(CAMERA_AXIS);
   shift.normalize();
-  shift.mult(-EULERS[2] / trans_scale);
+  shift.mult(-EULERS[2] / TRANS_SCALE);
   CAMERA_EYE.add(shift);
   CAMERA_CENTER.add(shift);
-
-//  // look down
-//  // rotate both look and CAMERA_AXIS around n = (look x CAMERA_AXIS)
-//  PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE);
-//  PVector n = look.cross(CAMERA_AXIS).normalize(null);
-//  look = rh_rotate(look, n, CAMERA_TURN);
-//  CAMERA_AXIS = rh_rotate(CAMERA_AXIS, n, CAMERA_TURN);
-//  CAMERA_CENTER = PVector.add(CAMERA_EYE, look);
 
   // turn left/right
   PVector up = CAMERA_AXIS.normalize(null);
   PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE);
-  look = rh_rotate(look, up, -EULERS[0] / angle_scale);
+  look = rh_rotate(look, up, -EULERS[0] / ANGLE_SCALE);
   CAMERA_CENTER = PVector.add(CAMERA_EYE, look);
 }
 
@@ -77,36 +63,29 @@ Boolean RIGHT_DOWN = false;
 
 
 void keyPressed() {
-  if (key == 'r')                    // for debug only.  remove later
+  if (key == 'r')                    // for testing only
     setup();
-  if (key == 'c')
+  else if (key == 'c')
     C_DOWN = true;
-  if (key == 'f')
+  else if (key == 'f')
     F_DOWN = true;
-  if (key == 'w')
+  else if (key == 'w')
     W_DOWN = true;
-  if (key == 'a')
+  else if (key == 'a')
     A_DOWN = true;
-  if (key == 's')
+  else if (key == 's')
     S_DOWN = true;
-  if (key == 'd')
+  else if (key == 'd')
     D_DOWN = true;
-  if (key == CODED) {
+  else if (key == CODED) {
     if (keyCode == UP)
       UP_DOWN = true;
-    if (keyCode == DOWN)
+    else if (keyCode == DOWN)
       DOWN_DOWN = true;
-    if (keyCode == LEFT)
+    else if (keyCode == LEFT)
       LEFT_DOWN = true;
-    if (keyCode == RIGHT)
+    else if (keyCode == RIGHT)
       RIGHT_DOWN = true;
-  }
-  
-  //TEST
-  if (key == 'p') {
-    println(CAMERA_EYE);
-    println(CAMERA_CENTER);
-    println(CAMERA_AXIS);
   }
 }
 
@@ -114,24 +93,24 @@ void keyPressed() {
 void keyReleased() {
   if (key == 'c')
     C_DOWN = false;
-  if (key == 'f')
+  else if (key == 'f')
     F_DOWN = false;
-  if (key == 'w')
+  else if (key == 'w')
     W_DOWN = false;
-  if (key == 'a')
+  else if (key == 'a')
     A_DOWN = false;
-  if (key == 's')
+  else if (key == 's')
     S_DOWN = false;
-  if (key == 'd')
+  else if (key == 'd')
     D_DOWN = false;
-  if (key == CODED) {
+  else if (key == CODED) {
     if (keyCode == UP)
       UP_DOWN = false;
-    if (keyCode == DOWN)
+    else if (keyCode == DOWN)
       DOWN_DOWN = false;
-    if (keyCode == LEFT)
+    else if (keyCode == LEFT)
       LEFT_DOWN = false;
-    if (keyCode == RIGHT)
+    else if (keyCode == RIGHT)
       RIGHT_DOWN = false;
   }
 }
@@ -183,9 +162,6 @@ void handle_keys() {
     CAMERA_CENTER.add(shift);
   }
   if (UP_DOWN) { // look up  
-    
-    //WHY ARE UP AND DOWN BACKWARDS??????
-    
     // rotate both look and CAMERA_AXIS around n = (look x CAMERA_AXIS)
     PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE);
     PVector n = look.cross(CAMERA_AXIS).normalize(null);
