@@ -26,12 +26,12 @@
 
 // uncomment to see Euler angles (in degrees)
 // calculated from quaternions coming from FIFO.
-#define OUTPUT_READABLE_EULER
+//#define OUTPUT_READABLE_EULER
 
 // uncomment to see yaw/pitch/roll angles (in degrees)
 // calculated from quaternions coming from FIFO.
 // Note this also requires gravity vector calculations.
-//#define OUTPUT_READABLE_YAWPITCHROLL
+#define OUTPUT_READABLE_YAWPITCHROLL
 
 // uncomment to see acceleration components with gravity removed. 
 // This acceleration reference frame is not compensated for orientation, 

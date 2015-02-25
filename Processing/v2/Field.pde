@@ -81,7 +81,7 @@ class Field {
   
   // return random position
   PVector random_position() {
-    return new PVector(int(random(0, _h)), int(random(0, _w)), int(random(0, _d)));
+    return new PVector(int(random(_h)), int(random(_w)), int(random(_d)));
   }
   
   

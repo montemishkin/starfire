@@ -14,14 +14,8 @@ void iterate_stars() {
     p = STAR_POSITIONS[i];
     v = STAR_VELOCITIES[i];
     
-    ph = zh.cross(p);
-    th = p.cross(ph);
-    
-    ph.normalize();
-    th.normalize();
-    
-    ph.mult(cos(T / 10));
-    th.mult(sin(T / 7));
+    ph = PVector.mult(zh.cross(p).normalize(null), cos(T / 10));
+    th = PVector.mult(p.cross(ph).normalize(null), sin(T / 7));
     
     p.add(PVector.mult(PVector.add(PVector.mult(ph, v.x), PVector.mult(th, v.y)), DT));
   } 

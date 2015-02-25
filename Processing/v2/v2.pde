@@ -175,7 +175,7 @@ void draw() {
   render_boxes();
   
   // essentially pauses simulation
-  if (BTN_L || BTN_R) return;
+  if (BTN_L) return;
   
   // iterate the content
   LIFE_PERIOD.set_modulus(int(map(mouseX, 0, width, 1, 10)));

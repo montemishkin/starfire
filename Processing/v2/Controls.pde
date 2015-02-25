@@ -10,6 +10,7 @@
  * Also, you need to:
  *     place restriction on where you can be
  *     maybe somehow show the edge of the arena also
+ *     optimize the whole handle_controls dealio
  */
 
 
@@ -23,26 +24,44 @@ float TRANS_SCALE = 2;
 
 
 void handle_controls() {
-  // translate forward/backward
-  // shift both CAMERA_EYE and CAMERA_CENTER a little bit along look
-  PVector shift = PVector.sub(CAMERA_CENTER, CAMERA_EYE);
-  shift.normalize();
-  shift.mult(EULERS[1] * TRANS_SCALE);
-  CAMERA_EYE.add(shift);
-  CAMERA_CENTER.add(shift);
+  PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE).normalize(null);
+  PVector down = CAMERA_AXIS.normalize(null);
+  PVector left = look.cross(down);
+  
+  PVector local_shift;
+  PVector total_shift = new PVector(0, 0, 0);
+  
+  if (BTN_R) {  // translate mode
+    // translate left/right
+    local_shift = left.get();
+    local_shift.mult(EULERS[2] * TRANS_SCALE);
+    total_shift.add(local_shift);
     
-  // translate left/right
-  // shift both CAMERA_EYE and CAMERA_CENTER a little bit along (look x CAMERA_AXIS)
-  shift = PVector.sub(CAMERA_CENTER, CAMERA_EYE).cross(CAMERA_AXIS);
-  shift.normalize();
-  shift.mult(-EULERS[2] * TRANS_SCALE);
-  CAMERA_EYE.add(shift);
-  CAMERA_CENTER.add(shift);
-
-  // turn left/right
-  PVector up = CAMERA_AXIS.normalize(null);
-  PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE);
-  look = rh_rotate(look, up, -EULERS[0] / ANGLE_SCALE_INV);
+    // translate up/down
+    local_shift = down.get();
+    local_shift.mult(EULERS[1] * TRANS_SCALE);
+    total_shift.add(local_shift);
+    
+  } else {  // turn mode
+    // translate forward/backward
+    local_shift = look.get();
+    local_shift.mult(EULERS[1] * TRANS_SCALE);
+    total_shift.add(local_shift);
+      
+    // translate left/right
+    local_shift = left.get();
+    local_shift.mult(EULERS[2] * TRANS_SCALE);
+    total_shift.add(local_shift);
+  
+    // turn left/right
+    look = rh_rotate(look, down, -EULERS[0] / ANGLE_SCALE_INV);
+  }
+  
+  // apply net translation  
+  CAMERA_EYE.add(total_shift);
+  CAMERA_CENTER.add(total_shift);
+  
+  // apply net rotation
   CAMERA_CENTER = PVector.add(CAMERA_EYE, look);
 }
 
