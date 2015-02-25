@@ -191,20 +191,23 @@ void draw() {
 //------------------------------------------------------------------------
 
 
-void serialEvent(Serial p) {
+void serialEvent(Serial port) {
   LAST_SERIAL_EVENT = millis();
 
-  String[] in = split(p.readString(), ',');
+  String in_string = port.readString();
+  String[] in_array = split(in_string, ',');
   
-  if (in.length == 4) {
+  if (in_array.length == 4) {
     // angle about MPU z axis
-    EULERS[0] = float(in[0]);
+    EULERS[0] = float(in_array[0]);
     // angle about MPU y axis
-    EULERS[1] = float(in[1]);
+    EULERS[1] = float(in_array[1]);
     // angle about MPU x axis
-    EULERS[2] = float(in[2]);
+    EULERS[2] = float(in_array[2]);
     // light reading from photo sensor
-    LIGHT = float(in[3]);
+    LIGHT = float(in_array[3]);
+  } else {
+    println("Unrecognized Serial Data: " + in_string);
   }
 }
 
