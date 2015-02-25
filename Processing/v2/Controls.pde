@@ -18,8 +18,8 @@ float CAMERA_STEP = 110;
 // turn size when rotating camera via keyboard controls
 float CAMERA_TURN = 0.05;
 // conversions between serial data and camera movement (rotations and translations)
-float ANGLE_SCALE = 3600;
-float TRANS_SCALE = 1;
+float ANGLE_SCALE_INV = 2000;  // inverted to avoid truncating
+float TRANS_SCALE = 2;
 
 
 void handle_controls() {
@@ -27,7 +27,7 @@ void handle_controls() {
   // shift both CAMERA_EYE and CAMERA_CENTER a little bit along look
   PVector shift = PVector.sub(CAMERA_CENTER, CAMERA_EYE);
   shift.normalize();
-  shift.mult(-EULERS[1] / TRANS_SCALE);
+  shift.mult(EULERS[1] * TRANS_SCALE);
   CAMERA_EYE.add(shift);
   CAMERA_CENTER.add(shift);
     
@@ -35,14 +35,14 @@ void handle_controls() {
   // shift both CAMERA_EYE and CAMERA_CENTER a little bit along (look x CAMERA_AXIS)
   shift = PVector.sub(CAMERA_CENTER, CAMERA_EYE).cross(CAMERA_AXIS);
   shift.normalize();
-  shift.mult(-EULERS[2] / TRANS_SCALE);
+  shift.mult(-EULERS[2] * TRANS_SCALE);
   CAMERA_EYE.add(shift);
   CAMERA_CENTER.add(shift);
 
   // turn left/right
   PVector up = CAMERA_AXIS.normalize(null);
   PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE);
-  look = rh_rotate(look, up, -EULERS[0] / ANGLE_SCALE);
+  look = rh_rotate(look, up, -EULERS[0] / ANGLE_SCALE_INV);
   CAMERA_CENTER = PVector.add(CAMERA_EYE, look);
 }
 
