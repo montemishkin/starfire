@@ -72,16 +72,12 @@ Serial PORT;
 float[] EULERS = new float[3];
 // light reading from photo sensor
 float LIGHT = 1024;
-// left button reading
-boolean BTN_L = false;
-// right button reading
-boolean BTN_R = false;
 // time of most recent serial event
 float LAST_SERIAL_EVENT = 0;
 
 
 // using keyboard controls or serial controls?
-boolean USING_SERIAL = true;
+boolean KEY_CONTROLS = false;
 
 
 //------------------------------------------------------------------------
@@ -96,7 +92,7 @@ void setup() {
   float z = (height / 2.0) / tan(PI * 30.0 / 180.0);
   perspective(PI / 3.0, float(width) / float(height), z / 10.0, z * 30);
   
-  if (USING_SERIAL) {
+  if (!KEY_CONTROLS) {
     // open serial port at 115200 baud
     PORT = new Serial(this, "/dev/tty.usbmodem1421", 115200);
     // only trigger serial events when newline is recieved
@@ -131,9 +127,8 @@ void setup() {
 
 
 void draw() {  
-  
   // if using serial controls and it has been over a second since last serial event
-  if (USING_SERIAL & (millis() - LAST_SERIAL_EVENT > 1000)) {
+  if (!KEY_CONTROLS & (millis() - LAST_SERIAL_EVENT > 1000)) {
     // resend command to initialize
     PORT.write('r');
     // set last event time to now
@@ -143,7 +138,7 @@ void draw() {
   }
   
   // update camera vectors based on input
-  if (!USING_SERIAL)
+  if (KEY_CONTROLS)
     handle_keys();
   else
     handle_controls();
@@ -172,9 +167,6 @@ void draw() {
   render_stars();
   render_life();
   render_boxes();
-  
-  // essentially pauses simulation
-  if (BTN_L || BTN_R) return;
   
   // iterate the content
   LIFE_PERIOD.set_modulus(int(map(mouseX, 0, width, 1, 10)));
@@ -205,9 +197,7 @@ void serialEvent(Serial port) {
   String in_string = port.readString();
   String[] in_array = split(in_string, ',');
   
-  in_array = trim(in_array);
-  
-  if (in_array.length == 6) {
+  if (in_array.length == 4) {
     // angle about MPU z axis
     EULERS[0] = float(in_array[0]);
     // angle about MPU y axis
@@ -216,10 +206,6 @@ void serialEvent(Serial port) {
     EULERS[2] = float(in_array[2]);
     // light reading from photo sensor
     LIGHT = float(in_array[3]);
-    // left button reading
-    BTN_L = boolean(int(in_array[4]));
-    // right button reading
-    BTN_R = boolean(int(in_array[5]));
   } else {
     println("Unrecognized Serial Data: " + in_string);
   }

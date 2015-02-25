@@ -50,9 +50,6 @@
 // uncomment to use bluetooth
 //#define USING_BLUETOOTH
 
-// uncomment to use photosensor
-#define USING_PHOTOSENSOR
-
 
 #define LED_PIN 13
 #define PHOTO_PIN A0
