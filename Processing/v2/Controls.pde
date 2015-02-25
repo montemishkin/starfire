@@ -1,11 +1,13 @@
 /* Notes:
- * You will need to have a switch to toggle between turn and translate modes.
- * In turn mode:
- *     operations performed on "look" vector
+ * Let's try three different serial control modes:
+ * In flat mode:
+ *     you can translate left/right and forward/backward
  *
- * In translate mode:
- *     operations performed on both eye location and scene center
- *     except for the yaw which idk what to do with.  maybe just same as turn mode?
+ * In wall mode:
+ *     you can translate left/right and up/down
+ *
+ * In turn mode:
+ *     you can turn left/right and up/down
  * 
  * Also, you need to:
  *     place restriction on where you can be
@@ -19,42 +21,54 @@ float CAMERA_STEP = 110;
 // turn size when rotating camera via keyboard controls
 float CAMERA_TURN = 0.05;
 // conversions between serial data and camera movement (rotations and translations)
-float ANGLE_SCALE_INV = 2000;  // inverted to avoid truncating
+float ANGLE_SCALE_INV = 1000;  // inverted to avoid truncating
 float TRANS_SCALE = 2;
 
 
 void handle_controls() {
+  PVector in = PVector.mult(PVector.sub(EULER, INIT_EULER), -1);
+  // positive in.y means front tilted up
+  // positive in.z means left tilted down
+  
   PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE).normalize(null);
   PVector down = CAMERA_AXIS.normalize(null);
   PVector left = look.cross(down);
   
   PVector local_shift;
-  PVector total_shift = new PVector(0, 0, 0);
+  PVector total_shift = new PVector();
   
-  if (BTN_R) {  // translate mode
+  PVector new_look = look.get();
+  PVector new_down = down.get();
+  
+  if (BTN_R) {  // wall mode
     // translate left/right
     local_shift = left.get();
-    local_shift.mult(EULERS[2] * TRANS_SCALE);
+    local_shift.mult(in.z * TRANS_SCALE);
     total_shift.add(local_shift);
     
     // translate up/down
     local_shift = down.get();
-    local_shift.mult(EULERS[1] * TRANS_SCALE);
+    local_shift.mult(-in.y * TRANS_SCALE);
     total_shift.add(local_shift);
     
-  } else {  // turn mode
-    // translate forward/backward
-    local_shift = look.get();
-    local_shift.mult(EULERS[1] * TRANS_SCALE);
-    total_shift.add(local_shift);
-      
+  } else if (BTN_L) { // turn mode
+    // turn left/right
+    new_look = rh_rotate(new_look, down, -in.z / ANGLE_SCALE_INV);
+    
+    // turn down/up
+    new_look = rh_rotate(new_look, left, -in.y / ANGLE_SCALE_INV);
+    new_down = rh_rotate(new_down, left, -in.y / ANGLE_SCALE_INV);
+    
+  } else {  // flat mode
     // translate left/right
     local_shift = left.get();
-    local_shift.mult(EULERS[2] * TRANS_SCALE);
+    local_shift.mult(in.z * TRANS_SCALE);
     total_shift.add(local_shift);
-  
-    // turn left/right
-    look = rh_rotate(look, down, -EULERS[0] / ANGLE_SCALE_INV);
+    
+    // translate forward/backward
+    local_shift = look.get();
+    local_shift.mult(-in.y * TRANS_SCALE);
+    total_shift.add(local_shift);
   }
   
   // apply net translation  
@@ -62,7 +76,8 @@ void handle_controls() {
   CAMERA_CENTER.add(total_shift);
   
   // apply net rotation
-  CAMERA_CENTER = PVector.add(CAMERA_EYE, look);
+  CAMERA_CENTER = PVector.add(CAMERA_EYE, new_look);
+  CAMERA_AXIS = new_down;
 }
 
 

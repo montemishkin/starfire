@@ -62,15 +62,17 @@ PVector[] STAR_VELOCITIES = new PVector[NUM_STARS];
 // position of the eye (in pixels)
 PVector CAMERA_EYE    = new PVector(0, 0, -1.6 * FIELD_SIZE);
 // position of the scene center (in pixels)
-PVector CAMERA_CENTER = new PVector(0, 0, 0);
+PVector CAMERA_CENTER = new PVector();
 // direction of "down"
 PVector CAMERA_AXIS   = new PVector(0, -1, 0);
 
 
 // serial port to read from
 Serial PORT;
+// the initial euler angles to compare to
+PVector INIT_EULER = new PVector();
 // euler angles to read from serial port
-float[] EULERS = new float[3];
+PVector EULER = new PVector();
 // light reading from photo sensor
 float LIGHT = 1024;
 // left button reading
@@ -208,21 +210,29 @@ void serialEvent(Serial port) {
   
   in_array = trim(in_array);
   
-  if (in_array.length == 6) {
+  if (in_array.length != 6)
+    println("Unrecognized Serial Data: " + in_string);
+  else {
+    // if first serial event ever then record initial values
+    if (LAST_SERIAL_EVENT == 0) {
+      INIT_EULER.x = float(in_array[0]);
+      INIT_EULER.y = float(in_array[1]);
+      INIT_EULER.z = float(in_array[2]);
+    }
+    
     // angle about MPU z axis
-    EULERS[0] = float(in_array[0]);
+    EULER.x = float(in_array[0]);
     // angle about MPU y axis
-    EULERS[1] = float(in_array[1]);
+    EULER.y = float(in_array[1]);
     // angle about MPU x axis
-    EULERS[2] = float(in_array[2]);
+    EULER.z = float(in_array[2]);
+    
     // light reading from photo sensor
     LIGHT = float(in_array[3]);
     // left button reading
     BTN_L = boolean(int(in_array[4]));
     // right button reading
     BTN_R = boolean(int(in_array[5]));
-  } else {
-    println("Unrecognized Serial Data: " + in_string);
   }
 }
 
