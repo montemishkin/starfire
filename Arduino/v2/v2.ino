@@ -9,6 +9,9 @@
  *
  *     A0             PHOTO
  *
+ *     D5             BTN-L
+ *     D7             BTN-R
+ *
  */
 
 
@@ -47,9 +50,14 @@
 // uncomment to use bluetooth
 //#define USING_BLUETOOTH
 
+// uncomment to use photosensor
+#define USING_PHOTOSENSOR
+
 
 #define LED_PIN 13
 #define PHOTO_PIN A0
+#define BTN_R_PIN 7
+#define BTN_L_PIN 5
 
 
 // orientation/motion vars
@@ -74,6 +82,10 @@ uint8_t teapotPacket[14] = {
 };
 // light sensor reading
 float photo = 1024;
+// left button reading
+bool btn_l = false;
+// right button reading
+bool btn_r = false;
 // blink state of LED for indicating status
 bool blinkState = false;
 
@@ -211,6 +223,8 @@ void loop() {
     //   while() loop to immediately process the MPU data
 
     photo = analogRead(PHOTO_PIN);
+    btn_l = (digitalRead(BTN_L_PIN) == HIGH);
+    btn_r = (digitalRead(BTN_R_PIN) == HIGH);
   }
 
   // reset interrupt flag and get INT_STATUS byte
@@ -242,14 +256,13 @@ void loop() {
     #ifdef OUTPUT_READABLE_QUATERNION
       // display quaternion values in easy matrix form: w x y z
       mpu.dmpGetQuaternion(&q, fifoBuffer);
-      Serial.print("quat\t");
       Serial.print(q.w);
-      Serial.print("\t");
+      Serial.print(",");
       Serial.print(q.x);
-      Serial.print("\t");
+      Serial.print(",");
       Serial.print(q.y);
-      Serial.print("\t");
-      Serial.println(q.z);
+      Serial.print(",");
+      Serial.print(q.z);
     #endif
 
     #ifdef OUTPUT_READABLE_EULER
@@ -261,9 +274,6 @@ void loop() {
       Serial.print(euler[1] * 180/M_PI);
       Serial.print(",");
       Serial.print(euler[2] * 180/M_PI);
-      Serial.print(",");
-      Serial.print(photo);
-      Serial.print('\n');
     #endif
 
     #ifdef OUTPUT_READABLE_YAWPITCHROLL
@@ -271,12 +281,11 @@ void loop() {
       mpu.dmpGetQuaternion(&q, fifoBuffer);
       mpu.dmpGetGravity(&gravity, &q);
       mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-      Serial.print("ypr\t");
       Serial.print(ypr[0] * 180/M_PI);
-      Serial.print("\t");
+      Serial.print(",");
       Serial.print(ypr[1] * 180/M_PI);
-      Serial.print("\t");
-      Serial.println(ypr[2] * 180/M_PI);
+      Serial.print(",");
+      Serial.print(ypr[2] * 180/M_PI);
     #endif
 
     #ifdef OUTPUT_READABLE_REALACCEL
@@ -285,12 +294,11 @@ void loop() {
       mpu.dmpGetAccel(&aa, fifoBuffer);
       mpu.dmpGetGravity(&gravity, &q);
       mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
-      Serial.print("areal\t");
       Serial.print(aaReal.x);
-      Serial.print("\t");
+      Serial.print(",");
       Serial.print(aaReal.y);
-      Serial.print("\t");
-      Serial.println(aaReal.z);
+      Serial.print(",");
+      Serial.print(aaReal.z);
     #endif
 
     #ifdef OUTPUT_READABLE_WORLDACCEL
@@ -301,12 +309,11 @@ void loop() {
       mpu.dmpGetGravity(&gravity, &q);
       mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
       mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
-      Serial.print("aworld\t");
       Serial.print(aaWorld.x);
-      Serial.print("\t");
+      Serial.print(",");
       Serial.print(aaWorld.y);
-      Serial.print("\t");
-      Serial.println(aaWorld.z);
+      Serial.print(",");
+      Serial.print(aaWorld.z);
     #endif
 
     #ifdef OUTPUT_TEAPOT
@@ -323,6 +330,14 @@ void loop() {
       // packetCount, loops at 0xFF on purpose
       teapotPacket[11]++;
     #endif
+
+    Serial.print(",");                    // problematic if using teapot output!
+    Serial.print(photo);
+    Serial.print(",");
+    Serial.print(btn_l);
+    Serial.print(",");
+    Serial.print(btn_r);
+    Serial.println();
 
     // blink LED to indicate activity
     blinkState = !blinkState;
