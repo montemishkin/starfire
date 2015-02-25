@@ -1,4 +1,4 @@
-/* 
+/* Notes:
  * You can evaluate the field at a coordinate (individually i, j, k) 
  *     or a position (a pvector).
  * When you do so, you can get back a vector (a pvector) or a color (a color).
@@ -9,6 +9,7 @@
  */
  
  
+// 3D PVector field
 class Field {
   // height, width, depth of array
   int _h, _w, _d;

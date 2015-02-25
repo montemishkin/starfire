@@ -1,5 +1,6 @@
-/* What if you made the stars move around the sphere surface as if they were
- * running "dots" but just wrapped around the sphere surface.
+/* Notes:
+ * What if you made the stars move around the sphere surface as if they were
+ *     running "dots" but just wrapped around the sphere surface.
  *
  */
 

@@ -1,3 +1,4 @@
+// 2D boolean array with methods geared toward Game of Life
 class Life {
   // number of rows and columns
   int _r, _c;

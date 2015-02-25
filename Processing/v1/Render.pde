@@ -1,4 +1,11 @@
-
+/* Notes:
+ * make the boundaries run the game of life!!!
+ * make the derivative of the soundwave determine the speed of life
+ *
+ */
+ 
+ 
+// render life board to arena walls
 void render_life() {
   fill(255);
   
@@ -44,11 +51,6 @@ void render_life() {
 }
 
 
-// make the boundaries run the game of life!!!            !!!!!!!!!!!!!
-// make the derivative of the soundwave determine the speed of life
-// but keep the render_boundaries idea as a sort of star field in background
-
-
 // renders the stars in the background
 void render_stars() {
   PVector r;
@@ -67,14 +69,14 @@ void render_stars() {
 
 // renders the shown boxes to the screen
 void render_boxes() {
-  PVector p;
-  PVector o;
+  PVector p, q;
 
-  
   for (int i = 0; i < NUM_SHOWN; i++) {
+    // position of box (in pixels)
     p = POSITIONS[i];
 
-    PVector q = p.get();
+    // to become coordinates of box within the field
+    q = p.get();
     q.x = floor(q.x / FIELD_CELL_SIZE);
     q.y = floor(q.y / FIELD_CELL_SIZE);
     q.z = floor(q.z / FIELD_CELL_SIZE);
@@ -118,3 +120,5 @@ void render_axes_labels() {
     text("+Z", 0, 0, 0);
   popMatrix();
 }
+
+

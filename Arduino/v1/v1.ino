@@ -92,16 +92,16 @@ void setup() {
         Fastwire::setup(400, true);
     #endif
     
-    Serial.begin(9600);    // Begin at bluetooth modem's default baud 9600
-    
-    // Enter command mode
-    Serial.print("$");
-    Serial.print("$");
-    Serial.print("$");
-    delay(100);                  // Short delay, wait for the Mate to send back CMD
-    Serial.println("U,115200,N");     // Change to 115200 baud
+//    Serial.begin(9600);    // Begin at bluetooth modem's default baud 9600
+//    
+//    // Enter command mode
+//    Serial.print("$");
+//    Serial.print("$");
+//    Serial.print("$");
+//    delay(100);                  // Short delay, wait for the Mate to send back CMD
+//    Serial.println("U,115200,N");     // Change to 115200 baud
 
-    //Serial.begin(115200);
+    Serial.begin(115200);
 
     // initialize device
     Serial.println(F("Initializing I2C devices..."));

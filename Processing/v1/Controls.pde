@@ -1,4 +1,5 @@
-/* You will need to have a switch to toggle between turn and translate modes.
+/* Notes:
+ * You will need to have a switch to toggle between turn and translate modes.
  * In turn mode:
  *     operations performed on "look" vector
  *

@@ -1,3 +1,4 @@
+// simple counter with variable modulus
 class Counter {
   // the counter value
   int _v;

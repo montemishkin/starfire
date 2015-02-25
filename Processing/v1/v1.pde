@@ -92,7 +92,7 @@ void setup() {
   
   if (!KEY_CONTROLS) {
     // open serial port at 115200 baud
-    PORT = new Serial(this, "/dev/tty.HC-06-DevB", 115200);
+    PORT = new Serial(this, "/dev/tty.usbmodem1421", 115200);
     // only trigger serial events when newline is recieved
     PORT.bufferUntil('\n');
     // send character to arduino to indicate ready
