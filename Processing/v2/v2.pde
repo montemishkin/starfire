@@ -58,6 +58,7 @@ PVector[] STAR_POSITIONS = new PVector[NUM_STARS];
 // velocities of the stars (in pixels)
 PVector[] STAR_VELOCITIES = new PVector[NUM_STARS];
 
+
 // position of the eye (in pixels)
 PVector CAMERA_EYE    = new PVector(0, 0, -1.6 * FIELD_SIZE);
 // position of the scene center (in pixels)
