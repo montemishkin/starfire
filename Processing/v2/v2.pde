@@ -19,7 +19,7 @@ float T = 0;
 // global time step
 float DT = 0.1;
 // counter for life iteration timing
-Counter LIFE_PERIOD = new Counter();   // CURRENTLY UNSUPPORTED BY SERIAL CONTROLS
+Counter LIFE_PERIOD = new Counter();
 
 
 // width of available arena (in pixels)
@@ -130,11 +130,11 @@ void setup() {
   LIFE_2.randomize();
 
   noStroke();
+  textMode(SHAPE);
 }
 
 
-void draw() {  
-  
+void draw() {
   // if using serial controls and it has been over a second since last serial event
   if (USING_SERIAL & (millis() - LAST_SERIAL_EVENT > 1000)) {
     // resend command to initialize
@@ -146,10 +146,10 @@ void draw() {
   }
   
   // update camera vectors based on input
-  if (!USING_SERIAL)
-    handle_keys();
-  else
+  if (USING_SERIAL)
     handle_controls();
+    
+  handle_keys();
     
   // update actual camera based on camera vectors
   set_camera();
@@ -158,17 +158,17 @@ void draw() {
   background(BACKGROUND);   
   
   // set up the lighting
-  PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE);
+  PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE).normalize(null);
   
   spotLight(red(SPOT_LIGHT), green(SPOT_LIGHT), blue(SPOT_LIGHT), // color 
             CAMERA_EYE.x   , CAMERA_EYE.y     , CAMERA_EYE.z    , // position
             look.x         , look.y           , look.z          , // direction
-            PI / 4,                                               // cone angle
-            map(LIGHT, 0, 1024, 40, 1));                                                   // concentration
-  // map the cone angle    between small and around PI/4
-  // map the concentration between small and around 40
+            map(LIGHT, 0, 1024, PI / 8, PI / 4),                  // cone angle
+            map(LIGHT, 0, 1024, 40, 1));                          // concentration
 
-  ambientLight(20, 20, 40);
+  ambientLight(map(LIGHT, 0, 1024, 20, 0), 
+               map(LIGHT, 0, 1024, 0, 20), 
+               map(LIGHT, 0, 1024, 20, 0));
   
   // render the content
   render_axes_labels();
@@ -176,8 +176,23 @@ void draw() {
   render_life();
   render_boxes();
   
-  // essentially pauses simulation
-  if (BTN_L) return;
+  
+  // print raw data
+  // requires some better transformations and lighting
+//  PVector txt_plane = PVector.add(PVector.mult(look, 1000), CAMERA_EYE);
+//  textSize(100);
+//  pushMatrix();
+//    translate(txt_plane.x, txt_plane.y, txt_plane.z);
+//    rotateX(PI);
+//    fill(200);
+//    box(2000, 500, 10);
+//    fill(255);
+//    text("Light: " + str(LIGHT), -800, -60, 20);
+//    text("Angles: " + str(EULER.x) 
+//             + ", " + str(EULER.y) 
+//             + ", " + str(EULER.z), -800, 60, 20);
+//  popMatrix();
+  
   
   // iterate the content
   LIFE_PERIOD.set_modulus(int(map(mouseX, 0, width, 1, 10)));
@@ -229,6 +244,7 @@ void serialEvent(Serial port) {
     
     // light reading from photo sensor
     LIGHT = float(in_array[3]);
+    
     // left button reading
     BTN_L = boolean(int(in_array[4]));
     // right button reading
