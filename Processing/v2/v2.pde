@@ -95,7 +95,7 @@ void setup() {
   // full screen the window and enable 3d graphics
   size(displayWidth, displayHeight, P3D);
   
-  // set the clipping plane farther away                          // ???????????
+  // set the clipping plane farther away                          // dirty
   float z = (height / 2.0) / tan(PI * 30.0 / 180.0);
   perspective(PI / 3.0, float(width) / float(height), z / 10.0, z * 30);
   
@@ -171,29 +171,13 @@ void draw() {
                map(LIGHT, 0, 1024, 20, 0));
   
   // render the content
-  render_axes_labels();
+  render_axes();
   render_stars();
   render_life();
   render_boxes();
-  
-  
-  // print raw data
-  // requires some better transformations and lighting
-//  PVector txt_plane = PVector.add(PVector.mult(look, 1000), CAMERA_EYE);
-//  textSize(100);
-//  pushMatrix();
-//    translate(txt_plane.x, txt_plane.y, txt_plane.z);
-//    rotateX(PI);
-//    fill(200);
-//    box(2000, 500, 10);
-//    fill(255);
-//    text("Light: " + str(LIGHT), -800, -60, 20);
-//    text("Angles: " + str(EULER.x) 
-//             + ", " + str(EULER.y) 
-//             + ", " + str(EULER.z), -800, 60, 20);
-//  popMatrix();
-  
-  
+  if (P_DOWN)
+    render_data();
+
   // iterate the content
   LIFE_PERIOD.set_modulus(int(map(mouseX, 0, width, 1, 10)));
   

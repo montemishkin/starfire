@@ -92,7 +92,7 @@ void render_boxes() {
 
 
 // draw axes labels
-void render_axes_labels() {
+void render_axes() {
   textSize(400);
   fill(255);
   pushMatrix();
@@ -122,3 +122,23 @@ void render_axes_labels() {
 }
 
 
+// render raw data in front of the camera
+void render_data() {
+  // requires some better transformations and lighting
+  PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE).normalize(null);
+  PVector txt_plane = PVector.add(PVector.mult(look, 1000), CAMERA_EYE);
+  textSize(80);
+  pushMatrix();
+    translate(txt_plane.x, txt_plane.y, txt_plane.z);
+    rotateX(PI);
+    fill(200);
+    box(2000, 500, 10);
+    translate(0, 0, 20);
+    fill(255);
+    text("Light: " + str(LIGHT), -800, -60, 0);
+    text("Buttons: " + str(BTN_L) + ", " + str(BTN_R), 0, -60, 0);
+    text("Angles: " + str(EULER.x) 
+             + ", " + str(EULER.y) 
+             + ", " + str(EULER.z), -800, 60, 0);
+  popMatrix();
+}

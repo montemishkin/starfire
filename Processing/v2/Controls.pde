@@ -11,7 +11,7 @@
  * 
  * Also, you need to:
  *     place restriction on where you can be
- *     optimize the whole handle_controls dealio
+ *
  */
 
 
@@ -24,10 +24,11 @@ float ANGLE_SCALE_INV = 1000;  // inverted to avoid truncating
 float TRANS_SCALE = 2;
 
 
+// handle the serial controls
 void handle_controls() {
   PVector in = PVector.mult(PVector.sub(EULER, INIT_EULER), -1);
-  // positive in.y means front tilted up
-  // positive in.z means left tilted down
+  // positive in.y means front tilted up?
+  // positive in.z means left tilted down?
   
   // LEFT handed coordinate system!!!
   PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE).normalize(null);
@@ -84,6 +85,7 @@ void handle_controls() {
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
 
+
 Boolean P_DOWN = false;
 Boolean C_DOWN = false;
 Boolean F_DOWN = false;
@@ -97,6 +99,7 @@ Boolean LEFT_DOWN = false;
 Boolean RIGHT_DOWN = false;
 
 
+// update keyboard state
 void keyPressed() {
   if (key == 'r')                    // for NON serial testing only
     setup();
@@ -127,6 +130,7 @@ void keyPressed() {
 }
 
 
+// update keyboard state
 void keyReleased() {
   if (key == 'p')
     P_DOWN = false;
@@ -155,6 +159,7 @@ void keyReleased() {
 }
 
 
+// handle the keyboard controls
 void handle_keys() {
   // LEFT handed coordinate system!!!
   PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE).normalize(null);
@@ -167,9 +172,6 @@ void handle_keys() {
   PVector new_look = look.get();
   PVector new_down = down.get();
   
-  if (P_DOWN) {  // print data
-
-  }
   if (C_DOWN) {  // translate down
     local_shift = down.get();
     local_shift.mult(CAMERA_STEP);
