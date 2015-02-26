@@ -75,8 +75,12 @@ PVector INIT_EULER = new PVector();
 PVector EULER = new PVector();
 // light reading from photo sensor
 float LIGHT = 1023;
-// sound reading from microphone
-float SOUND = 1023;
+// length of buffer that will log sound data
+int SOUND_BUFFER_SIZE = 10;
+// buffer logging sound readings from microphone
+float[] SOUND_BUFFER = new float[SOUND_BUFFER_SIZE];
+// standard deviation (from average) of sound buffer
+float SOUND_DEVIATION = 0;
 // left button reading
 boolean BTN_L = false;
 // right button reading
@@ -166,7 +170,8 @@ void draw() {
             CAMERA_EYE.x   , CAMERA_EYE.y     , CAMERA_EYE.z    , // position
             look.x         , look.y           , look.z          , // direction
             map(LIGHT, 0, 1023, PI / 8, PI / 4),                  // cone angle
-            map(LIGHT, 0, 1023, 40, 1));                          // concentration
+            map(SOUND_DEVIATION, 200, 1000, 40, 1));                          // concentration
+            //map(LIGHT, 0, 1023, 40, 1));                          // concentration
 
   ambientLight(map(LIGHT, 0, 1023, 20, 0), 
                map(LIGHT, 0, 1023, 0, 20), 
@@ -181,7 +186,7 @@ void draw() {
     render_data();
 
   // iterate the content
-  LIFE_PERIOD.set_modulus(int(map(mouseX, 0, width, 1, 10)));
+  LIFE_PERIOD.set_modulus(int(map(abs(SOUND_DEVIATION), 200, 500, 40, 1)));
   
   if (LIFE_PERIOD.is_zero()) {
     LIFE_1.iterate();
@@ -232,7 +237,9 @@ void serialEvent(Serial port) {
     LIGHT = float(in_array[3]);
     
     // sound reading from microphone
-    SOUND = float(in_array[4]);
+    SOUND_BUFFER = shift_float_list(SOUND_BUFFER);
+    SOUND_BUFFER[SOUND_BUFFER.length - 1] = float(in_array[4]);
+    SOUND_DEVIATION = float_list_deviation(SOUND_BUFFER);
     
     // left button reading
     BTN_L = boolean(int(in_array[5]));

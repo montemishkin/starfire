@@ -36,3 +36,37 @@ int mod(float n, float m) {
 }
 
 
+// shifts a float list's entries down an index 
+float[] shift_float_list(float[] list) {
+  float[] result = new float[list.length];
+  
+  for (int i = 0; i < list.length - 1; i++)
+    result[i] = list[i + 1];
+    
+  return result;
+}
+
+
+// calculates average value of a float list
+float float_list_average(float[] list) {
+  float sum = 0;
+  
+  for (int i = 0; i < list.length; i++)
+    sum += list[i];
+    
+  return sum / list.length;
+}
+
+
+// calculates "standard deviation" of a float list (from its average)
+float float_list_deviation(float[] list) {
+  float av = float_list_average(list);
+  float dev = 0;
+  
+  for (int i = 0; i < list.length; i++)
+    dev += pow(list[i] - av, 2);
+    
+  return sqrt(dev);
+}
+
+

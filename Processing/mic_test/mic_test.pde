@@ -1,106 +1,118 @@
 import processing.serial.*;
 
 Serial myPort;
-int TRASH_CUTOFF = 100;
+
+// how many of initial readings to ignore
+int trash_cutoff = 100;
+// how many of initial readings have already been ignored
 int trash_counter = 0;
-StringList in_data = new StringList();
 
-int resolution;
-float rect_width;
-float rect_height = 5;
-FloatList bins = new FloatList();
+// length of sound buffer
+int buffer_length = 1280;
+// buffer which logs sound readings
+float[] buffer = new float[buffer_length];
+// average over buffer
+float average;
+// deviation (from average) of buffer
+float deviation;
 
-float R = 0;
-
-float av;
-int avrange = 100;
 
 void setup() {  
-  size(displayWidth, displayHeight);
-  resolution = width;
-  rect_width = width / resolution;
+  size(displayWidth, displayHeight, P3D);
   
   myPort = new Serial(this, "/dev/tty.usbmodem1421", 115200);
-  //myPort = new Serial(this, "/dev/tty.HC-06-DevB", 115200);
   myPort.bufferUntil('\n');
-  
-  for (int i = 0; i < resolution; i++)
-    bins.append(0);
-    
-  stroke(255);
-  fill(255);
 }
 
 
 void draw() {
+  float x, y, r;
+  
   background(0);
-  float x;
-  float y;
   
+  // print data to screen
+  text("Last: " + str(buffer[buffer.length - 1]), 10, 20);
+  text("Average: " + str(average), 10, 40);
+  text("Deviation: " + str(deviation), 10, 60);
   
-  av = 0;
-  
-  for (int i = resolution - avrange; i < resolution; i++)
-    av += bins.get(i);
-    
-  av /= avrange;
-  
-  text(av, 10, 10);
-  
-  float r = map(av, 0, 1024, 0, 600);
-  float g = map(av, 0, 1024, 200, -200);
-  float b = abs(r - g);
-  noStroke();
-  fill(r, g, b);
-  float radius = map(av, 0, 1024, 0, 2*height);
-  ellipse(width/2, height/2, radius, radius);
-  
-  ellipse(width/4, height/4, R, R);
-
-//  for (int i = 0; i < resolution; i++) {
-//    x = i * rect_width;
-//    y = map(bins.get(i), 0, 1024, height, 0);
-//    rect(x, y, rect_width, height);
-//  }
-  
+  // plot sound wave
   stroke(255);
   noFill();
   beginShape();
-  for (int i = 0; i < resolution; i++) {
-    x = i * rect_width;
-    y = map(bins.get(i), 0, 1024, height, 0);
+  for (int i = 0; i < buffer.length; i++) {
+    x = i;
+    y = map(buffer[i], 0, 1023, height, 0);
     vertex(x, y);
   }
   endShape();
+  
+  // determine color from sound
+  noStroke();
+  fill(map(average, 0, 1023, 0, 600),
+       map(average, 0, 1023, 200, -200), 
+       100);
+  
+  // render circle with radius proportional to last sound data
+  r = map(buffer[buffer.length - 1], 0, 1023, 0, height / 4);
+  ellipse(width / 4, height / 2, r, r);
+  
+  // render circle with radius proportional to average
+  r = map(average, 0, 1023, 0, height / 4);
+  ellipse(2 * width / 4, height / 2, r, r);
+  
+  // render circle with radius proportional to deviation
+  r = map(deviation, 0, 1023, 0, height / 4);
+  ellipse(3 * width / 4, height / 2, r, r);
 }
 
 
 void serialEvent(Serial p) {
-  if (trash_counter < TRASH_CUTOFF) {
+  if (trash_counter < trash_cutoff) {
     p.readString();
     trash_counter++;
   } else {
-    String[] l = split(p.readString(), ',');
-    in_data = new StringList();
-    for (int i = 0; i < l.length; i++)
-      in_data.append(l[i]);
-      
-    bins = shift_list(bins);
-    if (in_data.size() > 0)
-      bins.set(resolution - 1, float(in_data.get(0)));
-      
-    if (in_data.size() > 1)
-      R = map(float(in_data.get(1)), 0, 1024, 0, 400);
-      
+    buffer = shift_float_list(buffer);
+    buffer[buffer.length - 1] = float(trim(p.readString()));
+    average = float_list_average(buffer);
+    deviation = float_list_deviation(buffer);
   }
 } 
 
-FloatList shift_list(FloatList list) {
-  FloatList result = new FloatList(list);
+
+//---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+
+
+// shifts a float list's entries down an index 
+float[] shift_float_list(float[] list) {
+  float[] result = new float[list.length];
   
-  for (int i = 0; i < result.size() - 1; i++)
-    result.set(i, result.get(i + 1));
+  for (int i = 0; i < list.length - 1; i++)
+    result[i] = list[i + 1];
     
   return result;
+}
+
+
+// calculates average value of a float list
+float float_list_average(float[] list) {
+  float sum = 0;
+  
+  for (int i = 0; i < list.length; i++)
+    sum += list[i];
+    
+  return sum / list.length;
+}
+
+
+// calculates "standard deviation" of a float list (from its average)
+float float_list_deviation(float[] list) {
+  float av = float_list_average(list);
+  float dev = 0;
+  
+  for (int i = 0; i < list.length; i++)
+    dev += pow(list[i] - av, 2);
+    
+  return sqrt(dev);
 }
 

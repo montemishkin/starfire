@@ -142,7 +142,7 @@ void render_data() {
     translate(0, 0, 20);
     fill(255);
     text("Light: " + str(LIGHT), col_1, row_1, 0);
-    text("Sound: " + str(SOUND), col_2, row_1, 0);
+    text("Sound: " + str(SOUND_DEVIATION), col_2, row_1, 0);
     text("Angles: " + str(EULER.x) 
              + ", " + str(EULER.y) 
              + ", " + str(EULER.z), col_1, 60, 0);
