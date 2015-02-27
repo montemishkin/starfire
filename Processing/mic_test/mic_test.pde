@@ -11,6 +11,10 @@ int trash_counter = 0;
 int buffer_length = 1280;
 // buffer which logs sound readings
 float[] buffer = new float[buffer_length];
+// most recent sound reading
+float last;
+// change between two most recent sound readings
+float delta;
 // average over buffer
 float average;
 // deviation (from average) of buffer
@@ -31,9 +35,11 @@ void draw() {
   background(0);
   
   // print data to screen
-  text("Last: " + str(buffer[buffer.length - 1]), 10, 20);
-  text("Average: " + str(average), 10, 40);
-  text("Deviation: " + str(deviation), 10, 60);
+  fill(255);
+  text("Last: " + str(last), 10, 20);
+  text("Delta: " + str(delta), 10, 40);
+  text("Average: " + str(average), 10, 60);
+  text("Deviation: " + str(deviation), 10, 80);
   
   // plot sound wave
   stroke(255);
@@ -48,21 +54,25 @@ void draw() {
   
   // determine color from sound
   noStroke();
-  fill(map(average, 0, 1023, 0, 600),
-       map(average, 0, 1023, 200, -200), 
+  fill(map(last, 0, 1023, 0, 255),
+       map(last, 0, 1023, 0, 255), 
        100);
   
-  // render circle with radius proportional to last sound data
-  r = map(buffer[buffer.length - 1], 0, 1023, 0, height / 4);
-  ellipse(width / 4, height / 2, r, r);
+  // render circle with radius proportional to last
+  r = map(last, 100, 400, 0, height / 4);
+  ellipse(width / 5, height / 2, r, r);
+  
+  // render circle with radius proportional to delta
+  r = map(delta, 0, 500, 0, height / 4);
+  ellipse(2 * width / 5, height / 2, r, r);
   
   // render circle with radius proportional to average
   r = map(average, 0, 1023, 0, height / 4);
-  ellipse(2 * width / 4, height / 2, r, r);
+  ellipse(3 * width / 5, height / 2, r, r);
   
   // render circle with radius proportional to deviation
   r = map(deviation, 0, 1023, 0, height / 4);
-  ellipse(3 * width / 4, height / 2, r, r);
+  ellipse(4 * width / 5, height / 2, r, r);
 }
 
 
@@ -73,6 +83,9 @@ void serialEvent(Serial p) {
   } else {
     buffer = shift_float_list(buffer);
     buffer[buffer.length - 1] = float(trim(p.readString()));
+    
+    last = buffer[buffer.length - 1];
+    delta = last - buffer[buffer.length - 2];
     average = float_list_average(buffer);
     deviation = float_list_deviation(buffer);
   }
