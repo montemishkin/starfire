@@ -1,6 +1,6 @@
 /* Notes:
  *   Let's try three different serial control modes:
- *   In flat mode:
+   In flat mode:
  *     you can translate left/right and forward/backward
  *
  *   In wall mode:

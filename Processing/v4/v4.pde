@@ -9,7 +9,7 @@ import processing.serial.*;
 
 
 // background opacity
-float OPACITY = 255;
+float OPACITY = 20;
 // background color
 color BACKGROUND = color(0);
 // ambient light color
@@ -44,6 +44,10 @@ int LIFE_CELL_SIZE = ARENA_SIZE / LIFE_WIDTH;
 int LIFE_CELL_THICK = 40;
 // half of the arena size (in pixels)
 int H_A_S = ARENA_SIZE / 2;
+// max number of dots
+int MAX_NUM_DOTS = 1000;
+// number of dots shown
+int NUM_DOTS = 1000;
 // number of stars
 int NUM_STARS = 2000;
 
@@ -52,6 +56,10 @@ int NUM_STARS = 2000;
 Life LIFE = new Life(LIFE_WIDTH, LIFE_WIDTH);
 // the actual color field 
 Field FIELD = new Field(FIELD_WIDTH, FIELD_WIDTH);
+// positions of dots (in pixels)
+PVector[] DOT_POSITIONS = new PVector[MAX_NUM_DOTS];
+// colors of dots
+color[] DOT_COLORS = new color[MAX_NUM_DOTS];
 // positions of the stars (in pixels)
 PVector[] STAR_POSITIONS = new PVector[NUM_STARS];
 // velocities of the stars (in pixels)
@@ -59,7 +67,7 @@ PVector[] STAR_VELOCITIES = new PVector[NUM_STARS];
 
 
 // position of the eye (in pixels)
-PVector CAMERA_EYE = new PVector(0, 0, -H_A_S + 100);
+PVector CAMERA_EYE = new PVector(0, 0, -ARENA_SIZE);
 // position of the scene center (in pixels)
 PVector CAMERA_CENTER = new PVector();
 // direction of "down"
@@ -87,7 +95,7 @@ boolean BTN_R = false;
 
 
 // using keyboard controls or serial controls?
-boolean USING_SERIAL = true;
+boolean USING_SERIAL = false;
 
 
 //------------------------------------------------------------------------
@@ -114,6 +122,14 @@ void setup() {
     LIGHT.set_all(1023);
   }
  
+  // initialize dots
+  for (int i = 0; i < MAX_NUM_DOTS; i++) {
+    DOT_POSITIONS[i] = new PVector(random(-H_A_S, H_A_S), 
+                                   random(-H_A_S, H_A_S), 
+                                   random(-H_A_S, H_A_S));
+    DOT_COLORS[i] = color(random(255), random(255), random(255));
+  }
+  
   // initialize stars
   for (int i = 0; i < NUM_STARS; i++) {
     STAR_POSITIONS[i] = PVector.mult(PVector.random3D(), ARENA_SIZE);
@@ -170,9 +186,10 @@ void draw() {
   
   // render the content
   render_field();
-  render_axes();
+  render_iterate_dots();
+  //render_axes();
   render_stars();
-  render_life();
+  //render_life();
   //render_soundwave();
   if (P_DOWN)
     render_data();

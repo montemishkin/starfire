@@ -3,7 +3,7 @@
  *   make the derivative of the soundwave determine the speed of life
  *
  */
- 
+
  
 // render life board to arena walls
 void render_life() {
