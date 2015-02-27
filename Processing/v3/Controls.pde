@@ -101,7 +101,7 @@ Boolean RIGHT_DOWN = false;
 
 // update keyboard state
 void keyPressed() {
-  if (key == 'r')                    // for NON serial testing only
+  if (key == 'r' && !USING_SERIAL)
     setup();
   else if (key == 'p')
     P_DOWN = true;

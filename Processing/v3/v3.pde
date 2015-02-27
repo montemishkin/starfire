@@ -27,7 +27,7 @@ int ARENA_SIZE = 10000;
 // width of color field (in pixels)
 int FIELD_SIZE = ARENA_SIZE / 5;
 // width of color field (number of cells per edge)
-int FIELD_WIDTH = 50;
+int FIELD_WIDTH = 30;
 // number of life board cells per wall edge
 int LIFE_WIDTH = 50;
 // width of a cell within the color field (in pixels)
@@ -91,7 +91,7 @@ float LAST_SERIAL_EVENT = 0;
 
 
 // using keyboard controls or serial controls?
-boolean USING_SERIAL = true;
+boolean USING_SERIAL = false;
 
 
 //------------------------------------------------------------------------
@@ -168,7 +168,7 @@ void draw() {
   set_camera();
   
   // clear the background
-  background(BACKGROUND);   
+  background(BACKGROUND);
   
   // set up the lighting
   PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE).normalize(null);

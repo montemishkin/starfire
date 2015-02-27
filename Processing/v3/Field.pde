@@ -5,6 +5,10 @@
  *
  * For example, v_at_c gives the vector at some coordinates.  That is, it takes three
  *     integer arguments and returns a pvector.
+ *
+ *
+ * HEY! maybe try replacing this by a 4d int array.  use floats to do iterations but
+ *     that's all?  In fact, maybe a 3d color array would be better?
  * 
  */
  
