@@ -27,7 +27,7 @@ int ARENA_SIZE = 10000;
 // width of color field (in pixels)
 int FIELD_SIZE = ARENA_SIZE / 5;
 // width of color field (number of cells per edge)
-int FIELD_WIDTH = 40;
+int FIELD_WIDTH = 50;
 // number of life board cells per wall edge
 int LIFE_WIDTH = 50;
 // width of a cell within the color field (in pixels)
@@ -38,15 +38,16 @@ int LIFE_CELL_SIZE = ARENA_SIZE / LIFE_WIDTH;
 int LIFE_CELL_THICK = 40;
 // half of the arena size (in pixels)
 int H_A_S = ARENA_SIZE / 2;
+// half of the field size (in pixels)
+int H_F_S = FIELD_SIZE / 2;
 // number of boxes shown
 int NUM_SHOWN = 10000;
 // number of stars
 int NUM_STARS = 2000;
 
 
-// the actual life boards
-Life LIFE_1 = new Life(4 * LIFE_WIDTH, LIFE_WIDTH);
-Life LIFE_2 = new Life(4 * LIFE_WIDTH, LIFE_WIDTH);
+// the actual life board
+Life LIFE = new Life(4 * LIFE_WIDTH, LIFE_WIDTH);
 // the actual color field 
 Field FIELD = new Field(FIELD_WIDTH, FIELD_WIDTH, FIELD_WIDTH);
 // positions of the shown boxes (in pixels)
@@ -76,7 +77,7 @@ PVector EULER = new PVector();
 // light reading from photo sensor
 float LIGHT = 1023;
 // length of buffer that will log sound data
-int SOUND_BUFFER_SIZE = 10;
+int SOUND_BUFFER_SIZE = 1280;
 // buffer logging sound readings from microphone
 float[] SOUND_BUFFER = new float[SOUND_BUFFER_SIZE];
 // standard deviation (from average) of sound buffer
@@ -103,7 +104,7 @@ void setup() {
   
   // set the clipping plane farther away                          // dirty
   float z = (height / 2.0) / tan(PI * 30.0 / 180.0);
-  perspective(PI / 3.0, float(width) / float(height), z / 10.0, z * 30);
+  perspective(PI / 3.0, float(width) / float(height), z / 10.0, z * 300);
   
   if (USING_SERIAL) {
     // open serial port at 115200 baud
@@ -115,13 +116,12 @@ void setup() {
   }
   
   // initialize positions and velocities of boxes
-  float hfw = FIELD_SIZE / 2;                                // dirty
-  float s = 20;
+  float s = 20;                                                    // dirty
   
   for (int i = 0; i < NUM_SHOWN; i++) {
-    POSITIONS[i] = new PVector(random(hfw - s, hfw + s), 
-                               random(hfw - s, hfw + s), 
-                               random(hfw - s, hfw + s));
+    POSITIONS[i] = new PVector(random(H_F_S - s, H_F_S + s), 
+                               random(H_F_S - s, H_F_S + s), 
+                               random(H_F_S - s, H_F_S + s));
     VELOCITIES[i] = PVector.mult(PVector.random3D(), 2);
   }
   
@@ -131,9 +131,16 @@ void setup() {
   }
   
   // randomize the field and boards
+//  FIELD.blank();
+//  FIELD.c_to_c(color(255), 0, 0, 0);
+//  FIELD.c_to_c(color(255, 0, 0), 1, 0, 0);
+//  FIELD.c_to_c(color(0, 255, 0), 0, 1, 0);
+//  FIELD.c_to_c(color(0, 0, 255), 0, 0, 1);
+//  FIELD.c_to_c(random_color(), -1, -1, 1);
+//  FIELD.c_to_c(random_color(), -1, 1, -1);
+
   FIELD.color_randomize();
-  LIFE_1.randomize();
-  LIFE_2.randomize();
+  LIFE.randomize();
 
   noStroke();
   textMode(SHAPE);
@@ -170,8 +177,7 @@ void draw() {
             CAMERA_EYE.x   , CAMERA_EYE.y     , CAMERA_EYE.z    , // position
             look.x         , look.y           , look.z          , // direction
             map(LIGHT, 0, 1023, PI / 8, PI / 4),                  // cone angle
-            map(SOUND_DEVIATION, 200, 1000, 40, 1));                          // concentration
-            //map(LIGHT, 0, 1023, 40, 1));                          // concentration
+            map(LIGHT, 0, 1023, 40, 1));                          // concentration
 
   ambientLight(map(LIGHT, 0, 1023, 20, 0), 
                map(LIGHT, 0, 1023, 0, 20), 
@@ -181,23 +187,23 @@ void draw() {
   render_axes();
   render_stars();
   render_life();
-  render_boxes();
+  //render_boxes();
+  render_soundbox();
+  render_soundwave();
   if (P_DOWN)
     render_data();
 
   // iterate the content
-  LIFE_PERIOD.set_modulus(int(map(abs(SOUND_DEVIATION), 200, 500, 40, 1)));
+  LIFE_PERIOD.set_modulus(int(map(mouseX, 0, width, 1, 20)));
   
-  if (LIFE_PERIOD.is_zero()) {
-    LIFE_1.iterate();
-    //LIFE_2.iterate();
-  }
+  if (LIFE_PERIOD.is_zero())
+    LIFE.iterate();
     
   LIFE_PERIOD.inc();
   FIELD.iterate(map(mouseX, 0, width , 0, 2), // k_color
                 map(mouseY, 0, height, 0, 2), // k_space
                 0.03);                        // k_growth
-  iterate_boxes();
+  //iterate_boxes();
   iterate_stars();
   
   T += DT;

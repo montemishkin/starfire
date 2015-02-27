@@ -7,12 +7,14 @@
  
 // render life board to arena walls
 void render_life() {
+  noStroke();
+  
   fill(255);
   
   // +z wall
   for (int i = 0; i < LIFE_WIDTH; i++)
     for (int j = 0; j < LIFE_WIDTH; j++)
-      if (LIFE_1.get_cell(i, j)) {
+      if (LIFE.get_cell(i, j)) {
         pushMatrix();
           translate((j * LIFE_CELL_SIZE) - H_A_S, H_A_S - (i * LIFE_CELL_SIZE), H_A_S);
           box(LIFE_CELL_SIZE, LIFE_CELL_SIZE, LIFE_CELL_THICK);
@@ -22,7 +24,7 @@ void render_life() {
   // +x wall
   for (int i = 0; i < LIFE_WIDTH; i++)
     for (int j = 0; j < LIFE_WIDTH; j++)
-      if (LIFE_1.get_cell(i, j + LIFE_WIDTH)) {
+      if (LIFE.get_cell(i, j + LIFE_WIDTH)) {
         pushMatrix();
           translate(H_A_S, H_A_S - (i * LIFE_CELL_SIZE), H_A_S - (j * LIFE_CELL_SIZE));
           box(LIFE_CELL_THICK, LIFE_CELL_SIZE, LIFE_CELL_SIZE);
@@ -32,7 +34,7 @@ void render_life() {
   // -z wall
   for (int i = 0; i < LIFE_WIDTH; i++)
     for (int j = 0; j < LIFE_WIDTH; j++)
-      if (LIFE_1.get_cell(i, j + (2 *LIFE_WIDTH))) {
+      if (LIFE.get_cell(i, j + (2 *LIFE_WIDTH))) {
         pushMatrix();
           translate(H_A_S - (j * LIFE_CELL_SIZE), H_A_S - (i * LIFE_CELL_SIZE), -H_A_S);
           box(LIFE_CELL_SIZE, LIFE_CELL_SIZE, LIFE_CELL_THICK);
@@ -42,7 +44,7 @@ void render_life() {
   // -x wall
   for (int i = 0; i < LIFE_WIDTH; i++)
     for (int j = 0; j < LIFE_WIDTH; j++)
-      if (LIFE_1.get_cell(i, j + (3 * LIFE_WIDTH))) {
+      if (LIFE.get_cell(i, j + (3 * LIFE_WIDTH))) {
         pushMatrix();
           translate(-H_A_S, H_A_S - (i * LIFE_CELL_SIZE), (j * LIFE_CELL_SIZE) - H_A_S);
           box(LIFE_CELL_THICK, LIFE_CELL_SIZE, LIFE_CELL_SIZE);
@@ -53,6 +55,8 @@ void render_life() {
 
 // renders the stars in the background
 void render_stars() {
+  noStroke();
+  
   PVector r;
   
   fill(255);
@@ -69,6 +73,8 @@ void render_stars() {
 
 // renders the shown boxes to the screen
 void render_boxes() {
+  noStroke();
+  
   PVector p, q;
 
   for (int i = 0; i < NUM_SHOWN; i++) {
@@ -83,11 +89,119 @@ void render_boxes() {
     
     fill(FIELD.c_at_p(q));
     pushMatrix();
-      translate(-FIELD_SIZE/2, -FIELD_SIZE/2, -FIELD_SIZE/2);
+      translate(-H_F_S, -H_F_S, -H_F_S);
       translate(p.x, p.y, p.z);
       box(FIELD_CELL_SIZE);
     popMatrix();
   }
+}
+
+
+// render only the boundary of the field
+void render_soundbox() {
+  noStroke();
+  
+  // -z wall
+  for (int i = 0; i < FIELD_WIDTH; i++)
+    for (int j = 0; j < FIELD_WIDTH; j++) {
+      fill(FIELD.c_at_c(i, j, 0));
+      pushMatrix();
+        translate((j * FIELD_CELL_SIZE) - H_F_S, 
+                  H_F_S - (i * FIELD_CELL_SIZE), 
+                  -H_F_S);
+        box(FIELD_CELL_SIZE, FIELD_CELL_SIZE, FIELD_CELL_SIZE);
+      popMatrix();
+    }
+    
+  // +z wall
+  for (int i = 0; i < FIELD_WIDTH; i++)
+    for (int j = 0; j < FIELD_WIDTH; j++) {
+      fill(FIELD.c_at_c(i, j, -1));
+      pushMatrix();
+        translate((j * FIELD_CELL_SIZE) - H_F_S, 
+                  H_F_S - (i * FIELD_CELL_SIZE), 
+                  H_F_S - FIELD_CELL_SIZE);
+        box(FIELD_CELL_SIZE, FIELD_CELL_SIZE, FIELD_CELL_SIZE);
+      popMatrix();
+    }
+    
+  // -x wall
+  for (int i = 0; i < FIELD_WIDTH; i++)
+    for (int k = 0; k < FIELD_WIDTH; k++) {
+      fill(FIELD.c_at_c(i, 0, k));
+      pushMatrix();
+        translate(-H_F_S, 
+                  H_F_S - (i * FIELD_CELL_SIZE), 
+                  (k * FIELD_CELL_SIZE) - H_F_S);
+        box(FIELD_CELL_SIZE, FIELD_CELL_SIZE, FIELD_CELL_SIZE);
+      popMatrix();
+    }
+    
+  // +x wall
+  for (int i = 0; i < FIELD_WIDTH; i++)
+    for (int k = 0; k < FIELD_WIDTH; k++) {
+      fill(FIELD.c_at_c(i, -1, k));
+      pushMatrix();
+        translate(H_F_S - FIELD_CELL_SIZE, 
+                  H_F_S - (i * FIELD_CELL_SIZE), 
+                  (k * FIELD_CELL_SIZE) - H_F_S);
+        box(FIELD_CELL_SIZE, FIELD_CELL_SIZE, FIELD_CELL_SIZE);
+      popMatrix();
+    }
+    
+  // -y wall
+  for (int j = 0; j < FIELD_WIDTH; j++)
+    for (int k = 0; k < FIELD_WIDTH; k++) {
+      fill(FIELD.c_at_c(-1, j, k));
+      pushMatrix();
+        translate((j * FIELD_CELL_SIZE) - H_F_S, 
+                  -H_F_S + FIELD_CELL_SIZE, 
+                  (k * FIELD_CELL_SIZE) - H_F_S);
+        box(FIELD_CELL_SIZE, FIELD_CELL_SIZE, FIELD_CELL_SIZE);
+      popMatrix();
+    }
+    
+  // +y wall
+  for (int j = 0; j < FIELD_WIDTH; j++)
+    for (int k = 0; k < FIELD_WIDTH; k++) {
+      fill(FIELD.c_at_c(0, j, k));
+      pushMatrix();
+        translate((j * FIELD_CELL_SIZE) - H_F_S, 
+                  H_F_S, 
+                  (k * FIELD_CELL_SIZE) - H_F_S);
+        box(FIELD_CELL_SIZE, FIELD_CELL_SIZE, FIELD_CELL_SIZE);
+      popMatrix();
+    }
+}
+
+
+// render sound wave to boundary
+void render_soundwave() {
+  float x, y, z;
+  
+  stroke(255);
+  noFill();
+  beginShape();
+  for (int i = 0; i < SOUND_BUFFER.length; i++) {
+    y = map(SOUND_BUFFER[i], 0, 1023, -H_A_S, H_A_S);
+    
+    if (i > 3 * SOUND_BUFFER_SIZE / 4) {
+      x = ((i - (3 * SOUND_BUFFER_SIZE / 4)) * 4 * ARENA_SIZE / SOUND_BUFFER_SIZE) - H_A_S; 
+      z = H_A_S;
+    } else if (i > SOUND_BUFFER_SIZE / 2) {
+      x = -H_A_S;
+      z = (((i - (SOUND_BUFFER_SIZE / 2)) * 4 * ARENA_SIZE / SOUND_BUFFER_SIZE) - H_A_S);
+    } else if (i > SOUND_BUFFER_SIZE / 4) {
+      x = H_A_S - ((i - (SOUND_BUFFER_SIZE / 4)) * 4 * ARENA_SIZE / SOUND_BUFFER_SIZE);
+      z = -H_A_S;
+    } else {
+      x = H_A_S;
+      z = H_A_S - (i * 4 * ARENA_SIZE / SOUND_BUFFER_SIZE);
+    }
+    
+    vertex(x, y, z);
+  }
+  endShape();
 }
 
 
@@ -140,6 +254,7 @@ void render_data() {
     fill(200);
     box(2000, 500, 10);
     translate(0, 0, 20);
+    noStroke();
     fill(255);
     text("Light: " + str(LIGHT), col_1, row_1, 0);
     text("Sound: " + str(SOUND_DEVIATION), col_2, row_1, 0);
@@ -149,3 +264,5 @@ void render_data() {
     text("Buttons: " + str(BTN_L) + ", " + str(BTN_R), col_2, row_2, 0);
   popMatrix();
 }
+
+
