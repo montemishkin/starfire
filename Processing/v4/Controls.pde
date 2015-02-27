@@ -1,15 +1,15 @@
 /* Notes:
- * Let's try three different serial control modes:
- * In flat mode:
+ *   Let's try three different serial control modes:
+ *   In flat mode:
  *     you can translate left/right and forward/backward
  *
- * In wall mode:
+ *   In wall mode:
  *     you can translate left/right and up/down
  *
- * In turn mode:
+ *   In turn mode:
  *     you can turn left/right and up/down
  * 
- * Also, you need to:
+ *   Also, you need to:
  *     place restriction on where you can be
  *
  */
@@ -86,17 +86,17 @@ void handle_controls() {
 //------------------------------------------------------------------------
 
 
-Boolean P_DOWN = false;
-Boolean C_DOWN = false;
-Boolean F_DOWN = false;
-Boolean W_DOWN = false;
-Boolean A_DOWN = false;
-Boolean S_DOWN = false;
-Boolean D_DOWN = false;
-Boolean UP_DOWN = false;
-Boolean DOWN_DOWN = false;
-Boolean LEFT_DOWN = false;
-Boolean RIGHT_DOWN = false;
+boolean P_DOWN = false;
+boolean C_DOWN = false;
+boolean F_DOWN = false;
+boolean W_DOWN = false;
+boolean A_DOWN = false;
+boolean S_DOWN = false;
+boolean D_DOWN = false;
+boolean UP_DOWN = false;
+boolean DOWN_DOWN = false;
+boolean LEFT_DOWN = false;
+boolean RIGHT_DOWN = false;
 
 
 // update keyboard state
@@ -225,4 +225,5 @@ void handle_keys() {
   CAMERA_CENTER = PVector.add(CAMERA_EYE, new_look);
   CAMERA_AXIS = new_down;
 }
+
 

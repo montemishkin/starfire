@@ -1,3 +1,8 @@
+/* Notes:
+ *
+ */
+ 
+ 
 // simple counter with variable modulus
 class Counter {
   // the counter value
@@ -42,14 +47,10 @@ class Counter {
   
   // set a new modulus and then mod by it
   Counter set_modulus(int m) {
-//    if (m <= 0) {
-//      println("Error: non-positive modulus");
-//      exit();
-//    }
-    
     _m = m;
     
     return mod_it();
   }
 }
+
 

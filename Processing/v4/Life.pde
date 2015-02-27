@@ -1,3 +1,8 @@
+/* Notes:
+ * 
+ */
+ 
+ 
 // 2D boolean array with methods geared toward Game of Life
 class Life {
   // number of rows and columns
@@ -14,16 +19,6 @@ class Life {
   }
   
   
-  // set all entries to false
-  Life blank() {
-    for (int i = 0; i < _r; i++)
-      for (int j = 0; j < _c; j++)
-        _a[i][j] = false;
-        
-    return this;
-  }
-  
-  
   // randomize the array
   Life randomize() {
     for (int i = 0; i < _r; i++)
@@ -37,14 +32,6 @@ class Life {
   // get value at coordinates (modded)
   boolean get_cell(int i, int j) {
     return _a[mod(i, _r)][mod(j, _c)];
-  }
-  
-  
-  // set value at coordinates (modded)
-  Life set_cell(int i, int j, boolean val) {
-    _a[mod(i, _r)][mod(j, _c)] = val;
-    
-    return this;
   }
   
   
@@ -81,3 +68,5 @@ class Life {
     return this;
   }
 }
+
+
