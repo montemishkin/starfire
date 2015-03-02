@@ -1,6 +1,10 @@
 /* Notes:
  *   What if you made the stars move around the sphere surface as if they were
  *     running "dots" but just wrapped around the sphere surface.
+ *   What if you instead modeled the star motion in spherical coordinates, thus
+ *     opening the possibility for movements in radial direction.
+ *     Maybe: v = "position in cartesian expansion" x "(r, cos(theta), sin(phi)) but
+ *     in cartesian".
  *
  */
 
@@ -8,17 +12,50 @@
 // moves the stars one step forward in time
 void iterate_stars() {
   PVector p, v, th, ph;
-  PVector zh = new PVector(0, cos(T / 30), sin(T / 20));
+  PVector zh = new PVector(0, 1, 0);//new PVector(0, cos(T / 30), sin(T / 20));
   
   for (int i = 0; i < NUM_STARS; i++) {
     p = STAR_POSITIONS[i];
-    v = STAR_VELOCITIES[i];
+    //v = STAR_VELOCITIES[i];
+    v = star_flow(p);
+   
     
     ph = PVector.mult(zh.cross(p).normalize(null), cos(T / 10));
     th = PVector.mult(p.cross(ph).normalize(null), sin(T / 7));
     
-    p.add(PVector.mult(PVector.add(PVector.mult(ph, v.x), PVector.mult(th, v.y)), DT));
+    p.add(PVector.mult(PVector.add(PVector.mult(ph, v.x), PVector.mult(th, v.y)), 100 * DT));
   } 
+}
+
+
+// this shouldn't go here?
+PVector star_flow(PVector p) {
+//  return new PVector(100, -201, -401);
+
+//  return p.cross((new PVector(1, 1, 1)).normalize(null));
+
+//  return p.cross(PVector.random3D());
+  
+  return new PVector(-100 * cos(p.y / 1000),
+                      100 * sin(p.x / 1000));
+                      
+//  float pr = sqrt(p.x*p.x + p.y*p.y + p.z*p.z);
+//  float pt = acos(p.z / pr);
+//  float pp = atan2(p.y, p.x);
+//  
+//  float nr = pr;
+//  float nt = cos(2 * pt);
+//  float np = sin(2 * pp);
+//  
+//  PVector idk = new PVector(nr * sin(nt) * cos(np),
+//                            nr * sin(nt) * sin(np),
+//                            nr * cos(nt));
+//                            
+//  return p.cross(idk);
+  
+//  return new PVector(-400 * sin(exp(p.y*p.y / 1000000)),
+//                     -400 * sin(exp(p.z*p.z / 1000000)),
+//                     -400 * sin(exp(p.x*p.x / 1000000)));
 }
 
 

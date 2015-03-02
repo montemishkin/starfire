@@ -49,7 +49,7 @@ int MAX_NUM_DOTS = 1000;
 // number of dots shown
 int NUM_DOTS = 1000;
 // number of stars
-int NUM_STARS = 2000;
+int NUM_STARS = 10000;
 
 
 // the actual life board
@@ -67,7 +67,7 @@ PVector[] STAR_VELOCITIES = new PVector[NUM_STARS];
 
 
 // position of the eye (in pixels)
-PVector CAMERA_EYE = new PVector(0, 0, -ARENA_SIZE);
+PVector CAMERA_EYE = new PVector(0, 0, -2 * ARENA_SIZE);
 // position of the scene center (in pixels)
 PVector CAMERA_CENTER = new PVector();
 // direction of "down"
@@ -167,6 +167,8 @@ void draw() {
     
   // update actual camera based on camera vectors
   set_camera();
+  
+  OPACITY = map(mouseX, 0, width, 0, 255);
   
   // clear the background
   noStroke();
