@@ -92,11 +92,11 @@ void render_field() {
 void render_soundwave() {
   float x, y, z;
   
-  stroke(255);
+  stroke(255 - red(BACKGROUND));
   noFill();
   beginShape();
   for (int i = 0; i < SOUND.get_size(); i++) {
-    y = map(SOUND.get_last(), 0, 1023, -H_A_S, H_A_S);
+    y = map(SOUND.get_ith(i), 0, 1023, -H_A_S, H_A_S);
     
     if (i > 3 * SOUND.get_size() / 4) {
       x = ((i - (3 * SOUND.get_size() / 4)) * 4 * ARENA_SIZE / SOUND.get_size()) - H_A_S; 

@@ -1,6 +1,9 @@
 /* Notes:
  *   The _avg and _dev fields are not updated automatically when the buffer data
  *     is changed.  You must manually update using update_avg or update.
+ *
+ *   What if instead of copying over a whole new array each time a value is pushed,
+ *     you just always keep the same array and change the insertion point?
  * 
  */
 
@@ -14,7 +17,8 @@ class FloatBuffer {
   float _avg;
   // the deviation (from average) over the buffer
   float _dev;
-    
+
+
   FloatBuffer(int size) {
     _len = size;
     _arr = new float[_len];
@@ -29,19 +33,44 @@ class FloatBuffer {
   }
   
   
+  // return the ith entry of the buffer
+  float get_ith(int i) {
+    return _arr[i];
+  }
+  
+  
   // return most recent value pushed into buffer
   float get_last() {
     return _arr[_len - 1];
   }
   
   
-  // returns the averag over the buffer AS OF LAST UPDATE
+  // return difference between most recent two values
+  float get_diff() {
+    return _arr[_len - 1] - _arr[_len - 2];
+  }
+  
+  
+  // return average over entries between [a, b) 
+  float get_avg_over(int a, int b) {
+    float result = 0;
+    
+    for (int i = a; i < b; i++) 
+      result += _arr[i];
+      
+    result /= (b - a - 1);
+    
+    return result;
+  }
+  
+  
+  // returns average over entire buffer AS OF LAST UPDATE
   float get_avg() {
     return _avg;
   }
   
   
-  // returns the deviation (from average) over the buffer AS OF LAST UPDATE
+  // returns deviation (from average) over entire buffer AS OF LAST UPDATE
   float get_dev() {
     return _dev;
   }
@@ -60,7 +89,7 @@ class FloatBuffer {
   }
   
   
-  // update both the average and deviation
+  // update both average and deviation
   FloatBuffer update() {
     update_avg();
     

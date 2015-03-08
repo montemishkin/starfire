@@ -21,7 +21,7 @@ float CAMERA_STEP = 110;
 float CAMERA_TURN = 0.05;
 // conversions between serial data and camera movement (rotations and translations)
 float ANGLE_SCALE_INV = 1000;  // inverted to avoid truncating
-float TRANS_SCALE = 2;
+float TRANS_SCALE = 5;
 
 
 // handle the serial controls
@@ -79,6 +79,9 @@ void handle_controls() {
   // apply net rotation
   CAMERA_CENTER = PVector.add(CAMERA_EYE, new_look);
   CAMERA_AXIS = new_down;
+  
+  if (BTN_R && BTN_L)
+    FIELD.randomize();
 }
 
 

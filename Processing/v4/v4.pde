@@ -47,7 +47,7 @@ int H_A_S = ARENA_SIZE / 2;
 // max number of dots
 int MAX_NUM_DOTS = 1000;
 // number of dots shown
-int NUM_DOTS = 1000;
+int NUM_DOTS = 100;
 // number of stars
 int NUM_STARS = 10000;
 
@@ -87,7 +87,7 @@ PVector EULER = new PVector();
 // light reading from photo sensor
 FloatBuffer LIGHT = new FloatBuffer(100);
 // buffer logging sound readings from microphone
-FloatBuffer SOUND = new FloatBuffer(1000);
+FloatBuffer SOUND = new FloatBuffer(300);
 // left button reading
 boolean BTN_L = false;
 // right button reading
@@ -95,7 +95,7 @@ boolean BTN_R = false;
 
 
 // using keyboard controls or serial controls?
-boolean USING_SERIAL = false;
+boolean USING_SERIAL = true;
 
 
 //------------------------------------------------------------------------
@@ -103,6 +103,7 @@ boolean USING_SERIAL = false;
 
 
 void setup() {
+  noCursor();
   // full screen the window and enable 3d graphics
   size(displayWidth, displayHeight, P3D);
   
@@ -115,6 +116,9 @@ void setup() {
     PORT = new Serial(this, "/dev/tty.usbmodem1421", 115200);
     // only trigger serial events when newline is recieved
     PORT.bufferUntil('\n');
+    // clear the port
+    while (PORT.available() > 0)
+      PORT.readString();
     // send character to arduino to indicate ready
     PORT.write('r');
   } else {
@@ -168,7 +172,7 @@ void draw() {
   // update actual camera based on camera vectors
   set_camera();
   
-  OPACITY = map(mouseX, 0, width, 0, 255);
+  //OPACITY = map(mouseX, 0, width, 0, 255);                    // test only
   
   // clear the background
   noStroke();
@@ -192,7 +196,7 @@ void draw() {
   //render_axes();
   render_stars();
   //render_life();
-  //render_soundwave();
+  render_soundwave();
   if (P_DOWN)
     render_data();
 
@@ -200,8 +204,9 @@ void draw() {
   if (LIFE_PERIOD.is_zero())
     LIFE.iterate();
   iterate_stars();
-  FIELD.iterate(map(mouseX, 0, width , 0, 2), // k_color
-                map(mouseY, 0, height, 0, 2), // k_space
+  PVector in = PVector.mult(PVector.sub(EULER, INIT_EULER), -1);
+  FIELD.iterate(map(in.z, 180, 180, 0, 2),//1.297, //map(mouseX, 0, width , 0, 2), // k_color
+                map(in.x, -180, 180, 0, 2),//0.563, //map(mouseY, 0, height, 0, 2), // k_space
                 0.03,                         // k_growth
                 true);                        // is_rand
   
@@ -245,11 +250,9 @@ void serialEvent(Serial port) {
     
     // light reading from photo sensor
     LIGHT.push(float(in_array[3]));
-    //LIGHT.update();
     
     // sound reading from microphone
     SOUND.push(float(in_array[4]));
-    //SOUND.update();
     
     // left button reading
     BTN_L = boolean(int(in_array[5]));
@@ -263,12 +266,26 @@ void serialEvent(Serial port) {
 void update_globals() {
   SERIAL_READY = false;
   
-  AMB_LIGHT = color(map(LIGHT.get_last(), 0, 1023, 20, 0), 
-                    map(LIGHT.get_last(), 0, 1023, 0, 20), 
-                    map(LIGHT.get_last(), 0, 1023, 20, 0));
-  OPACITY = map(LIGHT.get_last(), 0, 1023, 0, 255);
-  SPOT_LIGHT_ANGLE = map(LIGHT.get_last(), 0, 1023, PI / 8, PI / 4);
-  SPOT_LIGHT_CONCENTRATION = map(LIGHT.get_last(), 0, 1023, 40, 1);
+  //LIGHT.update();
+  SOUND.update();
+  
+  float l = LIGHT.get_last();
+  float s_n = SOUND.get_avg_over(SOUND.get_size() - 10, SOUND.get_size());
+  float s_o = SOUND.get_avg_over(0, SOUND.get_size() - 10);
+  float s = s_n - s_o;
+  
+  AMB_LIGHT = color(map(l, 0, 1023, 20, 0), 
+                    map(l, 0, 1023, 0, 20), 
+                    map(l, 0, 1023, 20, 0));
+  OPACITY = map(l, 0, 1023, 0, 255);
+  SPOT_LIGHT_ANGLE = map(l, 0, 1023, PI / 8, PI / 4);
+  SPOT_LIGHT_CONCENTRATION = map(l, 0, 1023, 40, 1);
+  
+  BACKGROUND = color(map(s, -100, 100, 0, 30),
+                     map(s, -100, 100, 30, 0),
+                     map(s, -100, 100, 0, 30));
+                     
+  //println(s);
 
 //  LIFE_PERIOD.set_modulus(int(map(LIGHT.get_dev(), 0, 1023, 20, 1)));
 }

@@ -60,9 +60,9 @@ void render_iterate_dots() {
     v = flow(p);
     s = map(v.magSq(), 0, 700, 0, 255);
     
-    fill(color((255 / 2) * (cos(s / 200) + 1),
-               (255 / 2) * (sin(s / 200) + 1),
-               (255 / 2) * (cos(sin(s / 200) + 1))));
+    fill(color((255 / 2) * (cos(s / 500) + 1),
+               (255 / 2) * (sin(s / 500) + 1),
+               (255 / 2) * (cos(sin(s / 500) + 1))));
     
     pushMatrix();
       translate(p.x, p.y, p.z);
@@ -86,7 +86,23 @@ void render_iterate_dots() {
 PVector flow(PVector p) {
   //return new PVector(100, -201, -401);
   
-  return PVector.mult(p.cross(new PVector(0, 1, 0)), 0.1);
+  //return PVector.mult(p.cross(new PVector(0, 1, 0)), 0.1);
+  
+  PVector in = PVector.mult(PVector.sub(EULER, INIT_EULER), -1);
+  // positive in.y means front tilted up?
+  // positive in.z means left tilted down?
+  
+  // LEFT handed coordinate system!!!
+  PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE).normalize(null);
+  PVector down = CAMERA_AXIS.normalize(null);
+  PVector left = down.cross(look);
+  
+  PVector mpu_up = down.get();
+  
+  mpu_up = rh_rotate(mpu_up, look, -in.z * PI / 180);
+  mpu_up = rh_rotate(mpu_up, left, -in.y * PI / 180);
+  
+  return PVector.mult(p.cross(mpu_up), 0.4);
   
 //  return new PVector(-100 * cos(p.y / 1000),
 //                     100 * sin(p.z / 1000),
