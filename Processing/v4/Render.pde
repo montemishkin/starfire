@@ -92,7 +92,7 @@ void render_field() {
 void render_soundwave() {
   float x, y, z;
   
-  stroke(255 - red(BACKGROUND));
+  stroke(200);
   noFill();
   beginShape();
   for (int i = 0; i < SOUND.get_size(); i++) {

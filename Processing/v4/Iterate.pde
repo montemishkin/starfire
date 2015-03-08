@@ -60,9 +60,9 @@ void render_iterate_dots() {
     v = flow(p);
     s = map(v.magSq(), 0, 700, 0, 255);
     
-    fill(color((255 / 2) * (cos(s / 500) + 1),
-               (255 / 2) * (sin(s / 500) + 1),
-               (255 / 2) * (cos(sin(s / 500) + 1))));
+    fill(color((255 / 2) * (cos(s / 5000) + 1),
+               (255 / 2) * (sin(s / 5000) + 1),
+               (255 / 2) * (cos(sin(s / 5000) + 1))));
     
     pushMatrix();
       translate(p.x, p.y, p.z);

@@ -205,7 +205,7 @@ void draw() {
     LIFE.iterate();
   iterate_stars();
   PVector in = PVector.mult(PVector.sub(EULER, INIT_EULER), -1);
-  FIELD.iterate(map(in.z, 180, 180, 0, 2),//1.297, //map(mouseX, 0, width , 0, 2), // k_color
+  FIELD.iterate(map(in.z, -180, 180, 0, 2),//1.297, //map(mouseX, 0, width , 0, 2), // k_color
                 map(in.x, -180, 180, 0, 2),//0.563, //map(mouseY, 0, height, 0, 2), // k_space
                 0.03,                         // k_growth
                 true);                        // is_rand
@@ -281,9 +281,9 @@ void update_globals() {
   SPOT_LIGHT_ANGLE = map(l, 0, 1023, PI / 8, PI / 4);
   SPOT_LIGHT_CONCENTRATION = map(l, 0, 1023, 40, 1);
   
-  BACKGROUND = color(map(s, -100, 100, 0, 30),
-                     map(s, -100, 100, 30, 0),
-                     map(s, -100, 100, 0, 30));
+//  BACKGROUND = color(map(s, -100, 100, 0, 30),
+//                     map(s, -100, 100, 30, 0),
+//                     map(s, -100, 100, 0, 30));
                      
   //println(s);
 
