@@ -76,6 +76,8 @@ PVector CAMERA_AXIS = new PVector(0, -1, 0);
 
 // serial port to read from
 Serial PORT;
+// info to log to console
+String CONSOLE = "";
 // have we begun?
 boolean BEGUN = false;
 // time of most recent serial event
@@ -159,15 +161,17 @@ void draw() {
     // set last event time to now
     LAST_SERIAL_TIME = millis();
     // log status
-    println("Disconnected. Attempting to re-connect.  Time: " + str(LAST_SERIAL_TIME));
+    CONSOLE += "Disconnected. Attempting to re-connect.  Time: " + str(LAST_SERIAL_TIME);
   }
   
   if (USING_SERIAL && !BEGUN) {
     background(20, 20, 200);
+    fill(255);
     textSize(20);
-    text("hey, im loading.\n god", width/2, height/2);
+    text(CONSOLE, 20, height - 20 - (20 * split(CONSOLE, '\n').length));
     
-    rect(mod(LAST_SERIAL_TIME / 100, width), height * 3 / 4, 10, 10);
+    fill(0);
+    rect(0, height - mod(LAST_SERIAL_TIME / 100, height), 8, 10);
     
     return;
   }
@@ -241,7 +245,7 @@ void serialEvent(Serial port) {
   in_array = trim(in_array);
   
   if (in_array.length != 7)
-    println("Unrecognized Serial Data: " + in_string);
+    CONSOLE += "Unrecognized Serial Data: " + in_string;
   else {
     // if first serial event ever then record initial angles
     if (!BEGUN) {
