@@ -76,6 +76,8 @@ PVector CAMERA_AXIS = new PVector(0, -1, 0);
 
 // serial port to read from
 Serial PORT;
+// have we begun?
+boolean BEGUN = false;
 // time of most recent serial event
 float LAST_SERIAL_TIME = 0;
 // if there has been a serial event since last update of global variables
@@ -151,13 +153,23 @@ void setup() {
 
 void draw() {
   // if using serial controls and it has been over a second since last serial event
-  if (USING_SERIAL & (millis() - LAST_SERIAL_TIME > 1000)) {
+  if (USING_SERIAL && (millis() - LAST_SERIAL_TIME > 1000)) {
     // resend command to initialize
     PORT.write('r');
     // set last event time to now
     LAST_SERIAL_TIME = millis();
     // log status
     println("Disconnected. Attempting to re-connect.  Time: " + str(LAST_SERIAL_TIME));
+  }
+  
+  if (USING_SERIAL && !BEGUN) {
+    background(20, 20, 200);
+    textSize(20);
+    text("hey, im loading.\n god", width/2, height/2);
+    
+    rect(mod(LAST_SERIAL_TIME / 100, width), height * 3 / 4, 10, 10);
+    
+    return;
   }
   
   // update camera vectors based on input
@@ -195,7 +207,7 @@ void draw() {
   render_iterate_dots();
   //render_axes();
   render_stars();
-  //render_life();
+  render_life();
   render_soundwave();
   if (P_DOWN)
     render_data();
@@ -222,7 +234,7 @@ void draw() {
 
 void serialEvent(Serial port) {
   LAST_SERIAL_TIME = millis();
-
+  
   String in_string = port.readString();
   String[] in_array = split(in_string, ',');
   
@@ -232,10 +244,12 @@ void serialEvent(Serial port) {
     println("Unrecognized Serial Data: " + in_string);
   else {
     // if first serial event ever then record initial angles
-    if (LAST_SERIAL_TIME == 0) {
+    if (!BEGUN) {
       INIT_EULER.x = float(in_array[0]);
       INIT_EULER.y = float(in_array[1]);
       INIT_EULER.z = float(in_array[2]);
+      
+      BEGUN = true;
     }
     
     // set flag to update global vars based on serial data

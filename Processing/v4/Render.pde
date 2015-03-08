@@ -11,45 +11,58 @@ void render_life() {
   
   fill(255);
   
-  // +z wall
   for (int i = 0; i < LIFE_WIDTH; i++)
     for (int j = 0; j < LIFE_WIDTH; j++)
       if (LIFE.get_cell(i, j)) {
         pushMatrix();
-          translate((j * LIFE_CELL_SIZE) - H_A_S, H_A_S - (i * LIFE_CELL_SIZE), H_A_S);
-          box(LIFE_CELL_SIZE, LIFE_CELL_SIZE, LIFE_CELL_THICK);
+          translate(H_A_S - (i * LIFE_CELL_SIZE), -H_A_S - 100, H_A_S - (j * LIFE_CELL_SIZE));
+          box(LIFE_CELL_SIZE, LIFE_CELL_THICK, LIFE_CELL_SIZE);
+        popMatrix();
+        pushMatrix();
+          translate(H_A_S - (i * LIFE_CELL_SIZE), H_A_S + 100, H_A_S - (j * LIFE_CELL_SIZE));
+          box(LIFE_CELL_SIZE, LIFE_CELL_THICK, LIFE_CELL_SIZE);
         popMatrix();
       }
   
-  // +x wall
-  for (int i = 0; i < LIFE_WIDTH; i++)
-    for (int j = 0; j < LIFE_WIDTH; j++)
-      if (LIFE.get_cell(i, j + LIFE_WIDTH)) {
-        pushMatrix();
-          translate(H_A_S, H_A_S - (i * LIFE_CELL_SIZE), H_A_S - (j * LIFE_CELL_SIZE));
-          box(LIFE_CELL_THICK, LIFE_CELL_SIZE, LIFE_CELL_SIZE);
-        popMatrix();
-      }
-  
-  // -z wall
-  for (int i = 0; i < LIFE_WIDTH; i++)
-    for (int j = 0; j < LIFE_WIDTH; j++)
-      if (LIFE.get_cell(i, j + (2 *LIFE_WIDTH))) {
-        pushMatrix();
-          translate(H_A_S - (j * LIFE_CELL_SIZE), H_A_S - (i * LIFE_CELL_SIZE), -H_A_S);
-          box(LIFE_CELL_SIZE, LIFE_CELL_SIZE, LIFE_CELL_THICK);
-        popMatrix();
-      }
-  
-  // -x wall
-  for (int i = 0; i < LIFE_WIDTH; i++)
-    for (int j = 0; j < LIFE_WIDTH; j++)
-      if (LIFE.get_cell(i, j + (3 * LIFE_WIDTH))) {
-        pushMatrix();
-          translate(-H_A_S, H_A_S - (i * LIFE_CELL_SIZE), (j * LIFE_CELL_SIZE) - H_A_S);
-          box(LIFE_CELL_THICK, LIFE_CELL_SIZE, LIFE_CELL_SIZE);
-        popMatrix();
-      }
+//  // +z wall
+//  for (int i = 0; i < LIFE_WIDTH; i++)
+//    for (int j = 0; j < LIFE_WIDTH; j++)
+//      if (LIFE.get_cell(i, j)) {
+//        pushMatrix();
+//          translate((j * LIFE_CELL_SIZE) - H_A_S, H_A_S - (i * LIFE_CELL_SIZE), H_A_S);
+//          box(LIFE_CELL_SIZE, LIFE_CELL_SIZE, LIFE_CELL_THICK);
+//        popMatrix();
+//      }
+//  
+//  // +x wall
+//  for (int i = 0; i < LIFE_WIDTH; i++)
+//    for (int j = 0; j < LIFE_WIDTH; j++)
+//      if (LIFE.get_cell(i, j + LIFE_WIDTH)) {
+//        pushMatrix();
+//          translate(H_A_S, H_A_S - (i * LIFE_CELL_SIZE), H_A_S - (j * LIFE_CELL_SIZE));
+//          box(LIFE_CELL_THICK, LIFE_CELL_SIZE, LIFE_CELL_SIZE);
+//        popMatrix();
+//      }
+//  
+//  // -z wall
+//  for (int i = 0; i < LIFE_WIDTH; i++)
+//    for (int j = 0; j < LIFE_WIDTH; j++)
+//      if (LIFE.get_cell(i, j + (2 *LIFE_WIDTH))) {
+//        pushMatrix();
+//          translate(H_A_S - (j * LIFE_CELL_SIZE), H_A_S - (i * LIFE_CELL_SIZE), -H_A_S);
+//          box(LIFE_CELL_SIZE, LIFE_CELL_SIZE, LIFE_CELL_THICK);
+//        popMatrix();
+//      }
+//  
+//  // -x wall
+//  for (int i = 0; i < LIFE_WIDTH; i++)
+//    for (int j = 0; j < LIFE_WIDTH; j++)
+//      if (LIFE.get_cell(i, j + (3 * LIFE_WIDTH))) {
+//        pushMatrix();
+//          translate(-H_A_S, H_A_S - (i * LIFE_CELL_SIZE), (j * LIFE_CELL_SIZE) - H_A_S);
+//          box(LIFE_CELL_THICK, LIFE_CELL_SIZE, LIFE_CELL_SIZE);
+//        popMatrix();
+//      }
 }
 
 

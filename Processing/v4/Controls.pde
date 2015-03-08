@@ -80,8 +80,10 @@ void handle_controls() {
   CAMERA_CENTER = PVector.add(CAMERA_EYE, new_look);
   CAMERA_AXIS = new_down;
   
-  if (BTN_R && BTN_L)
+  if (BTN_R && BTN_L) {
     FIELD.randomize();
+    LIFE.randomize();
+  }
 }
 
 
