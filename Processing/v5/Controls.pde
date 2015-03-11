@@ -1,6 +1,5 @@
 /* Notes:
- *   Let's try three different serial control modes:
-   In flat mode:
+ *   In flat mode:
  *     you can translate left/right and forward/backward
  *
  *   In wall mode:
@@ -8,9 +7,6 @@
  *
  *   In turn mode:
  *     you can turn left/right and up/down
- * 
- *   Also, you need to:
- *     place restriction on where you can be
  *
  */
 
@@ -83,6 +79,10 @@ void handle_controls() {
   if (BTN_R && BTN_L) {
     FIELD.randomize();
     LIFE.randomize();
+    for (int i = 0; i < NUM_STARS; i++) {
+      STAR_POSITIONS[i] = PVector.mult(PVector.random3D(), ARENA_SIZE);
+      STAR_VELOCITIES[i] = PVector.mult(PVector.random2D(), 1000);
+    }
   }
 }
 
