@@ -23,15 +23,9 @@ class Field {
   Field randomize() {
     for (int i = 0; i < _r; i++)
       for (int j = 0; j < _c; j++)
-        _a[i][j] = color(random(255), random(255), random(0, 255));
+        _a[i][j] = color(random(255), random(255), random(255));
                                     
     return this;
-  }
-  
-  
-  // return random position
-  PVector random_position() {
-    return new PVector(int(random(_r)), int(random(_c)));
   }
   
   
@@ -79,7 +73,7 @@ class Field {
   
   
   // iterate to next step
-  Field iterate(float k_color, float k_space, float k_growth, boolean is_rand) {
+  Field iterate(float k_color, float k_space, float k_growth) {
     color[][] next = new color[_r][_c];
   
     color temp_c;
@@ -92,10 +86,9 @@ class Field {
                              temp_c >>  8 & 0xFF,
                              temp_c       & 0xFF);
 
-        if (is_rand)                        
-          dc_color = temp_v.cross(new PVector(random(2), random(2), random(2)));
-        else
-          dc_color = temp_v.cross(new PVector(1, 1, 1));
+        dc_color = temp_v.cross(new PVector(random(2), 
+                                            random(2), 
+                                            random(2)));
         
         dc_color.add(PVector.mult(temp_v, k_growth));
         dc_color.mult(k_color);

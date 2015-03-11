@@ -57,10 +57,7 @@ class Life {
       for (int j = 0; j < _c; j++) {
         nbrs = neighbors(i, j);
         
-        if (get_cell(i, j))
-          next[i][j] = ((nbrs == 2) || (nbrs == 3));
-        else
-          next[i][j] = (nbrs == 3);
+        next[i][j] = (nbrs == 3) || ((nbrs == 2) && get_cell(i, j));
       }
       
     _a = next;
