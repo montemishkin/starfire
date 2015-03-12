@@ -14,6 +14,7 @@ void loop() {
     sound = analogRead(MIC_PIN);
     btn_l = (digitalRead(BTN_L_PIN) == HIGH);
     btn_r = (digitalRead(BTN_R_PIN) == HIGH);
+    sw    = (digitalRead(SW_PIN) == HIGH);
   }
 
   // reset interrupt flag and get INT_STATUS byte
@@ -63,6 +64,8 @@ void loop() {
     Serial.print(btn_l);
     Serial.print(",");
     Serial.print(btn_r);
+    Serial.print(",");
+    Serial.print(sw);
     Serial.println();
 
     // blink LED to indicate activity

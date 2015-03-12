@@ -112,9 +112,9 @@ void serialEvent(Serial port) {
   String in_string = port.readString();
   String[] in_array = split(in_string, ',');
   
-  SERIAL_DATA = trim(in_array);
+  SERIAL_DATA = trim(in_array);                            // ????????
   
-  if (in_array.length != 7)
+  if (in_array.length != 8)
     CONSOLE += ">>> Non data-packet string received: " + in_string;
   else {
     // if first serial event ever then record initial angles
@@ -125,11 +125,6 @@ void serialEvent(Serial port) {
       
       SERIAL_BEGUN = true;
     }
-    
-    // light reading from photo sensor
-    LIGHT.push(float(SERIAL_DATA[3]));
-    // sound reading from microphone
-    SOUND.push(float(SERIAL_DATA[4]));
 
     // angle about MPU z axis
     EULER.x = float(SERIAL_DATA[0]);
@@ -138,10 +133,18 @@ void serialEvent(Serial port) {
     // angle about MPU x axis
     EULER.z = float(SERIAL_DATA[2]);
     
+    // light reading from photo sensor
+    LIGHT.push(float(SERIAL_DATA[3]));
+    // sound reading from microphone
+    SOUND.push(float(SERIAL_DATA[4]));
+    
     // left button reading
     BTN_L = boolean(int(SERIAL_DATA[5]));
     // right button reading
     BTN_R = boolean(int(SERIAL_DATA[6]));
+
+    // switch reading
+    SW = boolean(int(SERIAL_DATA[7]));
 
     // set flag to update global vars based on serial data
     SERIAL_READY = true;

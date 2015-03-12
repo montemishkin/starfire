@@ -12,6 +12,8 @@
  *     D5             BTN-L
  *     D7             BTN-R
  *
+ *     D4             SW
+ *
  *     A2             MIC
  *
  */
@@ -27,8 +29,9 @@
 #define LED_PIN   13
 #define LIGHT_PIN A0
 #define MIC_PIN   A2
-#define BTN_R_PIN 7
-#define BTN_L_PIN 5
+#define BTN_R_PIN  7
+#define BTN_L_PIN  5
+#define SW_PIN     4
 
 
 // Sensor Variables
@@ -48,6 +51,8 @@ float sound = 0;
 bool btn_l = false;
 // right button reading
 bool btn_r = false;
+// switch reading
+bool sw = false;
 // blink state of LED for indicating status
 bool blink_state = false;
 

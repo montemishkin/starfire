@@ -79,11 +79,11 @@ PVector[] STARS = new PVector[N_STARS];
 // Scene Variables
 //---------------------------------------------------------------------
 // position of the eye (in pixels)
-PVector CAMERA_EYE = new PVector(0, 0, -2 * ARENA_SIZE);
+PVector CAMERA_EYE = new PVector(0, H_A_S, 0);
 // position of the scene center (in pixels)
 PVector CAMERA_CENTER = new PVector();
 // direction of "down" (LEFT HANDED COORDINATE SYSTEM!)
-PVector CAMERA_AXIS = new PVector(0, -1, 0);
+PVector CAMERA_AXIS = new PVector(0, 0, -1);
 
 
 // Serial Variables
@@ -110,5 +110,7 @@ FloatBuffer SOUND = new FloatBuffer(300);
 boolean BTN_L = false;
 // right button reading
 boolean BTN_R = false;
+// switch reading
+boolean SW = false;
 
 

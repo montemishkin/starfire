@@ -11,7 +11,7 @@
  */
  
 
-// updates the actual camera to reflect any changes made to the camera vectors
+// updates the actual camera to reflect changes made to camera vectors
 void set_camera() {
   camera(CAMERA_EYE.x   , CAMERA_EYE.y   , CAMERA_EYE.z   ,
          CAMERA_CENTER.x, CAMERA_CENTER.y, CAMERA_CENTER.z, 
@@ -21,6 +21,17 @@ void set_camera() {
 
 // handle the serial controls
 void handle_controls() {
+  if (BTN_R && BTN_L) {
+    // reset field, life, stars
+    FIELD.randomize();
+    LIFE.randomize();
+    for (int i = 0; i < N_STARS; i++)
+      STARS[i] = PVector.mult(PVector.random3D(), ARENA_SIZE);
+  }
+
+  // disable movement by exiting early
+  if (SW) return;
+
   // calculate input
   PVector in = PVector.sub(INIT_EULER, EULER);
   
@@ -73,14 +84,6 @@ void handle_controls() {
   // apply net rotation
   CAMERA_CENTER = PVector.add(CAMERA_EYE, new_look);
   CAMERA_AXIS = new_down;
-  
-  if (BTN_R && BTN_L) {
-    // reset field, life, stars
-    FIELD.randomize();
-    LIFE.randomize();
-    for (int i = 0; i < N_STARS; i++)
-      STARS[i] = PVector.mult(PVector.random3D(), ARENA_SIZE);
-  }
 }
 
 
