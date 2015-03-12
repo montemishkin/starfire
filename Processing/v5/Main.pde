@@ -19,11 +19,11 @@ void setup() {
   PORT = new Serial(this, "/dev/tty.usbmodem1421", 115200);
   // only trigger serial events when newline is recieved
   PORT.bufferUntil('\n');
-  // clear the port
-  while (PORT.available() > 0)
-    PORT.readString();
   // send character to arduino to indicate ready
   PORT.write('r');
+  
+  //load the finch image
+  FINCH = loadImage("finch.jpg");
  
   // initialize all simulation variables
   FIELD.randomize();
@@ -40,7 +40,7 @@ void setup() {
 void draw() {
   // if has been over a second since last serial event
   if (millis() - LAST_SERIAL_TIME > 1000) {
-    // resend command to initialize
+    // resend command to initialize mpu
     PORT.write('r');
     // set last event time to now
     LAST_SERIAL_TIME = millis();
@@ -52,28 +52,26 @@ void draw() {
   // if haven't yet received valid data packet
   if (!SERIAL_BEGUN) {
     // log the console to the display
-    background(20, 20, 200);
-    fill(255);
-    text(CONSOLE, 20, height - (30 * split(CONSOLE, '\n').length));
-    
+    render_console();
     // exit the draw loop early
     return;
   }
   
-//  if (BTN_L && BTN_R){ 
-//    render_data();
-//    
-//    return;
-//  }
+  // update global vars based on serial data
+  if (SERIAL_READY)
+    update_globals();
   
   // update camera vectors based on input
   handle_controls();
   // update actual camera based on camera vectors
   set_camera();
-  
-  // update global vars based on serial data
-  if (SERIAL_READY)
-    update_globals();
+
+  if (mousePressed) {
+    background(20, 20, 200);
+    fill(255);
+    text(CONSOLE, 20, height - (30 * split(CONSOLE, '\n').length));
+    return;
+  }
   
   // clear the background
   noStroke();
@@ -99,17 +97,11 @@ void draw() {
   render_iterate_stars();
 
   // iterate the content
-  if (LIFE_PERIOD.is_zero())
-    LIFE.iterate();
-  
+  LIFE.iterate();
   PVector in = PVector.sub(INIT_EULER, EULER);
   FIELD.iterate(map(in.z, -180, 180, 0, 2), // k_color
                 map(in.x, -180, 180, 0, 2), // k_space
                 0.03);                      // k_growth
-  
-  // increment time
-  T += DT;
-  LIFE_PERIOD.inc();
 }
 
 
@@ -120,7 +112,7 @@ void serialEvent(Serial port) {
   String in_string = port.readString();
   String[] in_array = split(in_string, ',');
   
-  in_array = trim(in_array);
+  SERIAL_DATA = trim(in_array);
   
   if (in_array.length != 7)
     CONSOLE += ">>> Non data-packet string received: " + in_string;
@@ -134,25 +126,25 @@ void serialEvent(Serial port) {
       SERIAL_BEGUN = true;
     }
     
-    // set flag to update global vars based on serial data
-    SERIAL_READY = true;
-    
-    // angle about MPU z axis
-    EULER.x = float(in_array[0]);
-    // angle about MPU y axis
-    EULER.y = float(in_array[1]);
-    // angle about MPU x axis
-    EULER.z = float(in_array[2]);
-    
     // light reading from photo sensor
-    LIGHT.push(float(in_array[3]));
+    LIGHT.push(float(SERIAL_DATA[3]));
     // sound reading from microphone
-    SOUND.push(float(in_array[4]));
+    SOUND.push(float(SERIAL_DATA[4]));
+
+    // angle about MPU z axis
+    EULER.x = float(SERIAL_DATA[0]);
+    // angle about MPU y axis
+    EULER.y = float(SERIAL_DATA[1]);
+    // angle about MPU x axis
+    EULER.z = float(SERIAL_DATA[2]);
     
     // left button reading
-    BTN_L = boolean(int(in_array[5]));
+    BTN_L = boolean(int(SERIAL_DATA[5]));
     // right button reading
-    BTN_R = boolean(int(in_array[6]));
+    BTN_R = boolean(int(SERIAL_DATA[6]));
+
+    // set flag to update global vars based on serial data
+    SERIAL_READY = true;
   }
 }
 
@@ -160,9 +152,6 @@ void serialEvent(Serial port) {
 // update global variables based on serial data
 void update_globals() {
   SERIAL_READY = false;
-  
-  //LIGHT.update();
-  //SOUND.update();
   
   float l = LIGHT.get_last();
   
@@ -173,8 +162,6 @@ void update_globals() {
   AMB_LIGHT = color(map(l, 0, 1023, 20, 0), 
                     map(l, 0, 1023, 0, 20), 
                     map(l, 0, 1023, 20, 0));
-  
-  //LIFE_PERIOD.set_modulus(int(map(LIGHT.get_dev(), 0, 1023, 20, 1)));
 }
 
 

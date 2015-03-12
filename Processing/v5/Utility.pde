@@ -3,14 +3,6 @@
  */
 
 
-// updates the actual camera to reflect any changes made to the camera vectors
-void set_camera() {
-  camera(CAMERA_EYE.x   , CAMERA_EYE.y   , CAMERA_EYE.z   ,
-         CAMERA_CENTER.x, CAMERA_CENTER.y, CAMERA_CENTER.z, 
-         CAMERA_AXIS.x  , CAMERA_AXIS.y  , CAMERA_AXIS.z  );
-}
-
-
 // rotates vector v around unit vector n by angle phi according to right hand rule
 PVector rh_rotate(PVector v, PVector n, float phi) {
   PVector n_comp = PVector.mult(n, v.dot(n));

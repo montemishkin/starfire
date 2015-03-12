@@ -9,6 +9,14 @@
  *     you can turn left/right and up/down
  *
  */
+ 
+
+// updates the actual camera to reflect any changes made to the camera vectors
+void set_camera() {
+  camera(CAMERA_EYE.x   , CAMERA_EYE.y   , CAMERA_EYE.z   ,
+         CAMERA_CENTER.x, CAMERA_CENTER.y, CAMERA_CENTER.z, 
+         CAMERA_AXIS.x  , CAMERA_AXIS.y  , CAMERA_AXIS.z  );
+}
 
 
 // handle the serial controls
@@ -30,7 +38,7 @@ void handle_controls() {
   if (BTN_R) {  // wall mode
     // translate left/right
     local_shift = left.get();
-    local_shift.mult(-in.z * TRANS_SCALE);
+    local_shift.mult((-in.z * TRANS_SCALE));
     total_shift.add(local_shift);
     
     // translate up/down
@@ -66,7 +74,8 @@ void handle_controls() {
   CAMERA_CENTER = PVector.add(CAMERA_EYE, new_look);
   CAMERA_AXIS = new_down;
   
-  if (BTN_R && BTN_L) {  // reset field, life, stars
+  if (BTN_R && BTN_L) {
+    // reset field, life, stars
     FIELD.randomize();
     LIFE.randomize();
     for (int i = 0; i < N_STARS; i++)

@@ -24,7 +24,7 @@ void render_iterate_stars() {
 }
 
 
-// this shouldn't go here?
+// a velocity field for the stars
 PVector star_flow(PVector p) {
                       
   float pr = sqrt(p.x*p.x + p.y*p.y + p.z*p.z);
@@ -72,13 +72,13 @@ void render_iterate_blocks() {
         (BLOCKS[i].y < -H_A_S) || (H_A_S < BLOCKS[i].y) ||
         (BLOCKS[i].z < -H_A_S) || (H_A_S < BLOCKS[i].z))
       BLOCKS[i] = new PVector(random(-H_A_S, H_A_S),
-                                       random(-H_A_S, H_A_S),
-                                       random(-H_A_S, H_A_S));
+                              random(-H_A_S, H_A_S),
+                              random(-H_A_S, H_A_S));
   }
 }
 
 
-// this shouldn't go here?
+// a velocity field for the blocks
 PVector block_flow(PVector p) {
   PVector in = PVector.sub(INIT_EULER, EULER);
   

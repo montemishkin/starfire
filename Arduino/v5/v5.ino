@@ -32,7 +32,7 @@
 
 
 // Sensor Variables
-//-----------------------------------------------------------------------
+//---------------------------------------------------------------------
 // [w, x, y, z] quaternion container
 Quaternion q;
 // [x, y, z] gravity vector
@@ -53,7 +53,7 @@ bool blink_state = false;
 
 
 // MPU control/status variables
-//-----------------------------------------------------------------------
+//---------------------------------------------------------------------
 // the actual MPU
 MPU6050 mpu;
 // set true if DMP init was successful
@@ -70,5 +70,12 @@ uint16_t fifo_count;
 uint8_t fifo_buffer[64];
 // indicates whether MPU interrupt pin has gone high
 volatile bool mpu_interrupt = false;
+
+
+// Interrupt Detection Scheme
+//---------------------------------------------------------------------
+void dmp_data_ready() {
+  mpu_interrupt = true;
+}
 
 

@@ -2,6 +2,16 @@
  *
  */
 
+
+// log console message to screen
+void render_console() {
+  background(20, 20, 200);
+  fill(255);
+  image(FINCH, width - 100, 0, 100, 100);
+  text("Is your finch healthy?\nEnter age to find out.", width - 310, 40);
+  text(CONSOLE, 20, height - (30 * split(CONSOLE, '\n').length));
+}
+
  
 // render life board at top of arena
 void render_life() {
@@ -42,7 +52,7 @@ void render_field() {
 void render_soundwave() {
   float x, y, z;
   
-  stroke(200);
+  stroke(255, 0, 255);
   noFill();
 
   beginShape();
@@ -50,13 +60,13 @@ void render_soundwave() {
     y = map(SOUND.get_ith(i), 0, 1023, -H_A_S, H_A_S);
     
     if (i > 3 * SOUND.get_size() / 4) {
-      x = ((i - (3 * SOUND.get_size() / 4)) * 4 * ARENA_SIZE / SOUND.get_size()) - H_A_S; 
+      x = (i * 4 * ARENA_SIZE / SOUND.get_size()) - (3 * ARENA_SIZE) - H_A_S;
       z = H_A_S;
     } else if (i > SOUND.get_size() / 2) {
       x = -H_A_S;
-      z = (((i - (SOUND.get_size() / 2)) * 4 * ARENA_SIZE / SOUND.get_size()) - H_A_S);
+      z = (i * 4 * ARENA_SIZE / SOUND.get_size()) - (2 * ARENA_SIZE) - H_A_S;
     } else if (i > SOUND.get_size() / 4) {
-      x = H_A_S - ((i - (SOUND.get_size() / 4)) * 4 * ARENA_SIZE / SOUND.get_size());
+      x = H_A_S + ARENA_SIZE - (i * 4 * ARENA_SIZE / SOUND.get_size());
       z = -H_A_S;
     } else {
       x = H_A_S;
@@ -66,43 +76,6 @@ void render_soundwave() {
     vertex(x, y, z);
   }
   endShape();
-}
-
-
-// render raw data in front of the camera
-void render_data() {
-  background(0, 0, 0);
-
-  fill(255);
-  
-  text(str(LIGHT.get_last()), width / 2, height / 4);
-  
-  
-//  // requires some better transformations and lighting
-//  PVector look = PVector.sub(CAMERA_CENTER, CAMERA_EYE).normalize(null);
-//  PVector txt_plane = PVector.add(PVector.mult(look, 1000), CAMERA_EYE);
-//  
-//  int col_1 = -800;
-//  int col_2 = 100;
-//  int row_1 = -60;
-//  int row_2 = 60;
-//  
-//  textSize(50);
-//  pushMatrix();
-//    translate(txt_plane.x, txt_plane.y, txt_plane.z);
-//    rotateX(PI);
-//    fill(200);
-//    box(2000, 500, 10);
-//    translate(0, 0, 20);
-//    noStroke();
-//    fill(255);
-//    text("Light: " + str(LIGHT.get_last()), col_1, row_1, 0);
-//    text("Sound: " + str(SOUND.get_last()), col_2, row_1, 0);
-//    text("Angles: " + str(EULER.x) 
-//             + ", " + str(EULER.y) 
-//             + ", " + str(EULER.z), col_1, 60, 0);
-//    text("Buttons: " + str(BTN_L) + ", " + str(BTN_R), col_2, row_2, 0);
-//  popMatrix();
 }
 
 

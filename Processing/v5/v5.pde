@@ -7,7 +7,9 @@ import processing.serial.*;
 
 
 // stores info to log to loading screen
-String CONSOLE = "";
+String CONSOLE = "CORE BOOT: Initializing Super Cool Monte System...\n";
+// the finch image
+PImage FINCH;
 
 
 // Color and Lighting Variables
@@ -24,16 +26,6 @@ color SPOT_LIGHT = color(255);
 float SPOT_LIGHT_ANGLE = PI / 4;
 // spot light concentration
 float SPOT_LIGHT_CONCENTRATION = 1;
-
-
-// Timing Variables
-//---------------------------------------------------------------------
-// global time counter
-float T = 0;
-// global time step
-float DT = 0.1;
-// counter for life iteration timing
-Counter LIFE_PERIOD = new Counter();
 
 
 // Sizing Variables
@@ -55,11 +47,11 @@ int LIFE_CELL_THICK = 40;
 // half of the arena size (in pixels)
 int H_A_S = ARENA_SIZE / 2;
 // max number of blocks
-int MAX_N_BLOCKS = 10000;
+int MAX_N_BLOCKS = 800;
 // number of blocks shown
 int N_BLOCKS = 100;
 // size of block (in pixels)
-int BLOCK_SIZE = 20;
+int BLOCK_SIZE =80;
 // number of stars
 int N_STARS = 10000;
 // size of star (in pixels)
@@ -72,6 +64,8 @@ float TRANS_SCALE = 5;
 
 // Simulation Variables
 //---------------------------------------------------------------------
+// global time step
+float DT = 0.1;
 // the actual life board
 Life LIFE = new Life(LIFE_WIDTH, LIFE_WIDTH);
 // the actual color field 
@@ -102,6 +96,8 @@ boolean SERIAL_READY = false;
 float LAST_SERIAL_TIME = 0;
 // serial port to read from
 Serial PORT;
+// holds the most recent incoming data packet
+String[] SERIAL_DATA;
 // the initial euler angles to compare to
 PVector INIT_EULER = new PVector();
 // euler angles to read from serial port
