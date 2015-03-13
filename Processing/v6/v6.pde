@@ -81,7 +81,7 @@ PVector[] STARS = new PVector[N_STARS];
 // position of the eye (in pixels)
 PVector CAMERA_EYE = new PVector(0, H_A_S, 0);
 // position of the scene center (in pixels)
-PVector CAMERA_CENTER = new PVector();
+PVector CAMERA_CENTER = new PVector(0, -H_A_S, 0);
 // direction of "down" (LEFT HANDED COORDINATE SYSTEM!)
 PVector CAMERA_AXIS = new PVector(0, 0, -1);
 
@@ -96,8 +96,6 @@ boolean SERIAL_READY = false;
 float LAST_SERIAL_TIME = 0;
 // serial port to read from
 Serial PORT;
-// holds the most recent incoming data packet
-String[] SERIAL_DATA;
 // the initial euler angles to compare to
 PVector INIT_EULER = new PVector();
 // euler angles to read from serial port

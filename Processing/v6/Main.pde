@@ -65,13 +65,6 @@ void draw() {
   handle_controls();
   // update actual camera based on camera vectors
   set_camera();
-
-  if (mousePressed) {
-    background(20, 20, 200);
-    fill(255);
-    text(CONSOLE, 20, height - (30 * split(CONSOLE, '\n').length));
-    return;
-  }
   
   // clear the background
   noStroke();
@@ -112,11 +105,11 @@ void serialEvent(Serial port) {
   String in_string = port.readString();
   String[] in_array = split(in_string, ',');
   
-  SERIAL_DATA = trim(in_array);                            // ????????
+  in_array = trim(in_array);
   
-  if (in_array.length != 8)
+  if (in_array.length != 8) {
     CONSOLE += ">>> Non data-packet string received: " + in_string;
-  else {
+  } else {
     // if first serial event ever then record initial angles
     if (!SERIAL_BEGUN) {
       INIT_EULER.x = float(in_array[0]);
@@ -127,24 +120,24 @@ void serialEvent(Serial port) {
     }
 
     // angle about MPU z axis
-    EULER.x = float(SERIAL_DATA[0]);
+    EULER.x = float(in_array[0]);
     // angle about MPU y axis
-    EULER.y = float(SERIAL_DATA[1]);
+    EULER.y = float(in_array[1]);
     // angle about MPU x axis
-    EULER.z = float(SERIAL_DATA[2]);
+    EULER.z = float(in_array[2]);
     
     // light reading from photo sensor
-    LIGHT.push(float(SERIAL_DATA[3]));
+    LIGHT.push(float(in_array[3]));
     // sound reading from microphone
-    SOUND.push(float(SERIAL_DATA[4]));
+    SOUND.push(float(in_array[4]));
     
     // left button reading
-    BTN_L = boolean(int(SERIAL_DATA[5]));
+    BTN_L = boolean(int(in_array[5]));
     // right button reading
-    BTN_R = boolean(int(SERIAL_DATA[6]));
+    BTN_R = boolean(int(in_array[6]));
 
     // switch reading
-    SW = boolean(int(SERIAL_DATA[7]));
+    SW = boolean(int(in_array[7]));
 
     // set flag to update global vars based on serial data
     SERIAL_READY = true;

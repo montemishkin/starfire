@@ -82,7 +82,7 @@ void handle_controls() {
   CAMERA_CENTER.add(total_shift);
   
   // apply net rotation
-  CAMERA_CENTER = PVector.add(CAMERA_EYE, new_look);
+  CAMERA_CENTER = PVector.add(CAMERA_EYE, PVector.mult(new_look, 1000));
   CAMERA_AXIS = new_down;
 }
 

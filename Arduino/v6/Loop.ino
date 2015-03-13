@@ -33,7 +33,7 @@ void loop() {
     // otherwise, check for DMP data ready interrupt 
     //  (this should happen frequently)
   } else if (mpu_int_status & 0x02) {
-    // wait for correct available data length, should be a VERY short wait
+    // wait for correct available data length, should be a very short wait
     while (fifo_count < packet_size) fifo_count = mpu.getFIFOCount();
 
     // read a packet from FIFO
